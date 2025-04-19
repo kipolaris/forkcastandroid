@@ -10,8 +10,10 @@ import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
 interface IngredientDao {
     @Query("SELECT * FROM ingredients")
     suspend fun getAll(): List<IngredientEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<IngredientEntity>)
+
     @Query("DELETE FROM ingredients")
     suspend fun deleteAll()
 }
