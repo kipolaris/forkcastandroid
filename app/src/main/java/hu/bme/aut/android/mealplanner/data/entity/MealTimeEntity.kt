@@ -1,6 +1,9 @@
 package hu.bme.aut.android.mealplanner.data.entity
 
-@Entity(tableName = "meal_times")
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "mealtimes")
 class MealTimeEntity(
     @PrimaryKey val id: Long,
     val name: String,
