@@ -15,6 +15,15 @@ import hu.bme.aut.android.mealplanner.network.api.DayApi
 import hu.bme.aut.android.mealplanner.network.api.FoodApi
 import hu.bme.aut.android.mealplanner.network.api.IngredientApi
 import hu.bme.aut.android.mealplanner.network.api.MealApi
+import hu.bme.aut.android.mealplanner.network.api.MealPlanApi
+import hu.bme.aut.android.mealplanner.network.api.MealTimeApi
+import hu.bme.aut.android.mealplanner.repository.DayRepository
+import hu.bme.aut.android.mealplanner.repository.FoodRepository
+import hu.bme.aut.android.mealplanner.repository.IngredientRepository
+import hu.bme.aut.android.mealplanner.repository.MealPlanRepository
+import hu.bme.aut.android.mealplanner.repository.MealRepository
+import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
+import hu.bme.aut.android.mealplanner.util.Constants.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -33,11 +42,14 @@ object AppModule {
             "mealplanner.db"
         ).fallbackToDestructiveMigration().build()
 
+    // Dao
     @Provides fun provideDayDao(db: MealPlannerDatabase): DayDao = db.dayDao()
     @Provides fun provideFoodDao(db: MealPlannerDatabase): FoodDao = db.foodDao()
     @Provides fun provideIngredientDao(db: MealPlannerDatabase): IngredientDao = db.ingredientDao()
     @Provides fun provideMealDao(db: MealPlannerDatabase): MealDao = db.mealDao()
     @Provides fun provideMealTimeDao(db: MealPlannerDatabase): MealTimeDao = db.mealTimeDao()
+    @Provides fun provideFoodIngredientCrossRefDao(db: MealPlannerDatabase): FoodIngredientCrossRefDao = db.foodIngredientCrossRefDao()
+
 
     //Retrofit
     @Provides
@@ -55,26 +67,76 @@ object AppModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080") // ⚠️ Replace with your actual base URL
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
+    // Api
     @Provides
     fun provideMealApi(retrofit: Retrofit): MealApi = retrofit.create(MealApi::class.java)
-
-    @Provides
-    fun provideFoodIngredientCrossRefDao(db: MealPlannerDatabase): FoodIngredientCrossRefDao = db.foodIngredientCrossRefDao()
 
     @Provides
     fun provideFoodApi(retrofit: Retrofit): FoodApi = retrofit.create(FoodApi::class.java)
 
     @Provides
-    fun provideIngredientApi(retrofit: Retrofit): IngredientApi =
-        retrofit.create(IngredientApi::class.java)
+    fun provideIngredientApi(retrofit: Retrofit): IngredientApi = retrofit.create(IngredientApi::class.java)
 
     @Provides
-    fun provideDayApi(retrofit: Retrofit): DayApi =
-        retrofit.create(DayApi::class.java)
+    fun provideDayApi(retrofit: Retrofit): DayApi = retrofit.create(DayApi::class.java)
+
+    @Provides
+    fun provideMealTimeApi(retrofit: Retrofit): MealTimeApi = retrofit.create(MealTimeApi::class.java)
+
+    @Provides
+    fun provideMealPlanApi(retrofit: Retrofit): MealPlanApi = retrofit.create(MealPlanApi::class.java)
+
+    // Repository
+    @Provides
+    @Singleton
+    fun provideMealPlanRepository(
+        api: MealPlanApi,
+        mealDao: MealDao,
+        mealTimeDao: MealTimeDao,
+        dayDao: DayDao
+    ): MealPlanRepository = MealPlanRepository(api, dayDao, mealDao, mealTimeDao)
+
+    @Provides
+    @Singleton
+    fun provideFoodRepository(
+        api: FoodApi,
+        foodDao: FoodDao,
+        crossRefDao: FoodIngredientCrossRefDao
+    ): FoodRepository = FoodRepository(api, foodDao, crossRefDao)
+
+    @Provides
+    @Singleton
+    fun provideIngredientRepository(
+        api: IngredientApi,
+        ingredientDao: IngredientDao
+    ): IngredientRepository = IngredientRepository(api, ingredientDao)
+
+    @Provides
+    @Singleton
+    fun provideDayRepository(
+        api: DayApi,
+        dayDao: DayDao,
+        mealDao: MealDao
+    ): DayRepository = DayRepository(api, dayDao, mealDao)
+
+    @Provides
+    @Singleton
+    fun provideMealTimeRepository(
+        api: MealTimeApi,
+        mealTimeDao: MealTimeDao
+    ): MealTimeRepository = MealTimeRepository(api, mealTimeDao)
+
+    @Provides
+    @Singleton
+    fun provideMealRepository(
+        api: MealApi,
+        mealDao: MealDao,
+        dayDao: DayDao
+    ): MealRepository = MealRepository(api, mealDao, dayDao)
 
 }

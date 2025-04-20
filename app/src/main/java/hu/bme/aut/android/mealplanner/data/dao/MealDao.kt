@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import hu.bme.aut.android.mealplanner.data.entity.MealEntity
+import hu.bme.aut.android.mealplanner.data.entity.MealWithFood
 
 @Dao
 interface MealDao {
@@ -17,4 +19,8 @@ interface MealDao {
 
     @Query("DELETE FROM meals")
     suspend fun deleteAll()
+
+    @Transaction
+    @Query("SELECT * FROM meals WHERE dayId = :dayId")
+    suspend fun getMealsWithFoodByDayId(dayId: Long): List<MealWithFood>
 }

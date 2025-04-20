@@ -10,3 +10,4 @@ data class MealEntity(
     val mealTimeId: Long,
     val dayId: Long
 )
+

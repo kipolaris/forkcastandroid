@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import hu.bme.aut.android.mealplanner.data.entity.DayEntity
+import hu.bme.aut.android.mealplanner.data.entity.DayWithFullMeals
 import hu.bme.aut.android.mealplanner.data.entity.DayWithMeals
 
 @Dao
@@ -22,4 +23,7 @@ interface DayDao {
     @Transaction
     @Query("SELECT * FROM days")
     suspend fun getAllWithMeals(): List<DayWithMeals>
+
+    @Query("SELECT * FROM days WHERE id = :dayId LIMIT 1")
+    suspend fun getDayById(dayId: Long): DayEntity
 }

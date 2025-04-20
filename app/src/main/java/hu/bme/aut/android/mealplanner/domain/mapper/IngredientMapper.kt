@@ -40,3 +40,4 @@ fun IngredientDto.toDomain(): Ingredient = Ingredient(
     quantity = quantity
 )
 
+

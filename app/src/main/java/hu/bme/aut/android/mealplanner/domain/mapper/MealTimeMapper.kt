@@ -10,6 +10,12 @@ fun MealTimeDto.toEntity(): MealTimeEntity = MealTimeEntity(
     order = this.order
 )
 
+fun MealTimeDto.toDomain() = MealTime(
+    id = id,
+    name = name,
+    order = order
+)
+
 fun MealTimeEntity.toDto(): MealTimeDto = MealTimeDto(
     id = this.id,
     name = this.name,

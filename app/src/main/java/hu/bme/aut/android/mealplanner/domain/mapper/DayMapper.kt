@@ -1,6 +1,8 @@
 package hu.bme.aut.android.mealplanner.domain.mapper
 
 import hu.bme.aut.android.mealplanner.data.entity.DayEntity
+import hu.bme.aut.android.mealplanner.data.entity.DayWithFullMeals
+import hu.bme.aut.android.mealplanner.data.entity.DayWithMeals
 import hu.bme.aut.android.mealplanner.domain.model.Day
 import hu.bme.aut.android.mealplanner.domain.model.Meal
 import hu.bme.aut.android.mealplanner.network.dto.DayDto
@@ -39,3 +41,10 @@ fun Day.toDto(): DayDto = DayDto(
     name = name,
     meals = meals.map { it.toDto() }
 )
+
+fun DayWithFullMeals.toDomain(): Day = Day(
+    id = day.id,
+    name = day.name,
+    meals = meals.map { it.toDomain() }
+)
+

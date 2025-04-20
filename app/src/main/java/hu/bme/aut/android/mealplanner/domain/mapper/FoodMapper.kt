@@ -1,6 +1,7 @@
 package hu.bme.aut.android.mealplanner.domain.mapper
 
 import hu.bme.aut.android.mealplanner.data.entity.FoodEntity
+import hu.bme.aut.android.mealplanner.data.entity.FoodWithIngredients
 import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.domain.model.Ingredient
 import hu.bme.aut.android.mealplanner.network.dto.FoodDto
@@ -12,7 +13,7 @@ fun FoodDto.toEntity(): FoodEntity = FoodEntity(
     description = this.description
 )
 
-fun FoodEntity.toDto(ingredients: List<IngredientDto>): FoodDto = FoodDto(
+fun FoodEntity.toDto(ingredients: List<IngredientDto> = emptyList()): FoodDto = FoodDto(
     id = this.id,
     name = this.name,
     description = this.description,
@@ -26,7 +27,7 @@ fun FoodDto.toDomain(): Food = Food(
     ingredients = ingredients.map { it.toDomain() }
 )
 
-fun FoodEntity.toDomain(ingredients: List<Ingredient>): Food = Food(
+fun FoodEntity.toDomain(ingredients: List<Ingredient> = emptyList()): Food = Food(
     id = id,
     name = name,
     description = description,
@@ -44,4 +45,11 @@ fun Food.toDto(): FoodDto = FoodDto(
     name = name,
     description = description,
     ingredients = ingredients.map { it.toDto() }
+)
+
+fun FoodWithIngredients.toDomain(): Food = Food(
+    id = food.id,
+    name = food.name,
+    description = food.description,
+    ingredients = ingredients.map { it.toDomain() }
 )
