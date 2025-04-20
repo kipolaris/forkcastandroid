@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.mealplanner.ui.navigation.NavGraph
+import hu.bme.aut.android.mealplanner.ui.theme.MealPlannerTheme
 import hu.bme.aut.android.mealplanner.viewmodel.MainViewModel
 
 @AndroidEntryPoint
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 }
             } else {
                 val navController = rememberNavController()
-                Surface {
+                MealPlannerTheme {
                     NavGraph(navController = navController)
                 }
             }

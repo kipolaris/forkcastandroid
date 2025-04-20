@@ -1,43 +1,65 @@
 package hu.bme.aut.android.mealplanner.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
+import hu.bme.aut.android.mealplanner.R
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    tertiary = Pink40,
+    background = Color(0xFFFFCDDC),
+    onBackground = Color(0xFFFF78A8),
+    surface = Color.White,
+    onSurface = Color(0xFFFF78A8),
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onSecondary = Color.White
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80,
+    background = Color(0xFFD9447E),
+    onBackground = Color(0xFFFF78A8),
+    surface = Color.White,
+    onSurface = Color(0xFFFF78A8),
+    onPrimary = Color.White,
+    onSecondary = Color.White
+)
+
+
+
+val LobsterFont = FontFamily(Font(R.font.lobsterregular))
+
+val AppTypography = Typography(
+    titleLarge = TextStyle(
+        fontFamily = LobsterFont,
+        fontSize = 28.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = LobsterFont,
+        fontSize = 22.sp
+    )
 )
 
 @Composable
 fun MealPlannerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -52,7 +74,7 @@ fun MealPlannerTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }
