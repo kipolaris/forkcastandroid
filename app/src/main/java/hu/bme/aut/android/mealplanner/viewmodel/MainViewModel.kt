@@ -3,6 +3,8 @@ package hu.bme.aut.android.mealplanner.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hu.bme.aut.android.mealplanner.repository.DayRepository
+import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
 import hu.bme.aut.android.mealplanner.sync.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val syncManager: SyncManager
+    private val syncManager: SyncManager,
+    private val dayRepository: DayRepository,
+    private val mealTimeRepository: MealTimeRepository
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(true)
@@ -22,6 +26,8 @@ class MainViewModel @Inject constructor(
             try {
                 syncManager.syncAll()
             } finally {
+                dayRepository.initializeDefaultDays()
+                mealTimeRepository.initializeDefaultMealTimes()
                 _isLoading.value = false
             }
         }

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,13 +41,21 @@ fun MenuScreen(navController: NavController) {
                         .height(60.dp)
                         .width(280.dp),
                     color = Color.White
-                ) {}
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.paper),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .matchParentSize()
+                    )
+                }
 
                 Text(
-                    text = "Menu",
+                    text = "Meal Planner",
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontFamily = LobsterFont,
-                        fontSize = 32.sp,
+                        fontSize = 36.sp,
                         fontWeight = FontWeight.Normal,
                         color = Color(0xFFFF78A8)
                     ),
@@ -95,7 +104,7 @@ fun MenuScreen(navController: NavController) {
                         text = label,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontFamily = LobsterFont,
-                            fontSize = 24.sp,
+                            fontSize = 28.sp,
                             fontWeight = FontWeight.Normal,
                             color = Color(0xFFFF78A8)
                         )

@@ -45,6 +45,6 @@ fun Day.toDto(): DayDto = DayDto(
 fun DayWithFullMeals.toDomain(): Day = Day(
     id = day.id,
     name = day.name,
-    meals = meals.map { it.toDomain() }
+    meals = meals?.map { it.toDomain() } ?: emptyList()
 )
 

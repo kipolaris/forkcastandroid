@@ -25,4 +25,16 @@ class MealTimeRepository(
             // TODO fallback to cached data
         }
     }
+
+    suspend fun initializeDefaultMealTimes() {
+        if (dao.getAll().isEmpty()) {
+            val defaults = listOf(
+                MealTimeEntity(id = 1, name = "Breakfast", order = 1),
+                MealTimeEntity(id = 2, name = "Lunch", order = 2),
+                MealTimeEntity(id = 3, name = "Dinner", order = 3)
+            )
+            dao.insertAll(defaults)
+        }
+    }
+
 }

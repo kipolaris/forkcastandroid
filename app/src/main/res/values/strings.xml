@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Meal Planner</string>
+    <string name="meal_plan">Meal Plan</string>
+    <string name="foods">Foods</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="meal_times">Meal times</string>
+    <string name="add_meal_time">Add new meal time</string>
+    <string name="reset">Reset</string>
+    <string name="menu">Menu</string>
+    <string name="meals">Meals</string>
+    <string name="days">Days</string>
 </resources>

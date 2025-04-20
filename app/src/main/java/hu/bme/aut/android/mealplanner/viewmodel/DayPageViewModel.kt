@@ -4,21 +4,27 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hu.bme.aut.android.mealplanner.data.entity.DayWithMeals
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
 import hu.bme.aut.android.mealplanner.domain.model.Day
+import hu.bme.aut.android.mealplanner.domain.model.Meal
+import hu.bme.aut.android.mealplanner.domain.model.MealTime
 import hu.bme.aut.android.mealplanner.repository.DayRepository
+import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DayPageViewModel @Inject constructor(
-    private val dayRepository: DayRepository
+    private val dayRepository: DayRepository,
+    private val mealTimeRepository: MealTimeRepository
 ) : ViewModel() {
 
     private val _days = MutableStateFlow<List<Day>>(emptyList())
     val days: StateFlow<List<Day>> = _days
+
+    private val _mealTimes = MutableStateFlow<List<MealTime>>(emptyList())
+    val mealTimes: StateFlow<List<MealTime>> = _mealTimes
 
     private val _currentDayIndex = MutableStateFlow(0)
     val currentDayIndex: StateFlow<Int> = _currentDayIndex
@@ -29,13 +35,10 @@ class DayPageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            dayRepository.initializeDefaultDays()
-            val fullDay = dayRepository.getDayWithFullMeals(1L)
-            Log.d("debug", fullDay.toString())
-            _days.value = listOf(fullDay.toDomain())
+            _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }
+            _mealTimes.value = mealTimeRepository.getAll().map { it.toDomain() }
         }
     }
-
 
     fun goToNextDay() {
         val nextIndex = _currentDayIndex.value + 1

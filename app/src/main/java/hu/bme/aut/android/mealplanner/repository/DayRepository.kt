@@ -51,4 +51,14 @@ class DayRepository(
         val meals = mealDao.getMealsWithFoodByDayId(dayId)
         return DayWithFullMeals(day, meals)
     }
+
+    suspend fun getAllWithFullMeals(): List<DayWithFullMeals> {
+        val days = dao.getAllWithMeals()
+        val daysWithFullMeals = emptyList<DayWithFullMeals>().toMutableList()
+        days.forEach { day ->
+            val meals = mealDao.getMealsWithFoodByDayId(day.day.id)
+            daysWithFullMeals += DayWithFullMeals(day.day, meals)
+        }
+        return daysWithFullMeals
+    }
 }
