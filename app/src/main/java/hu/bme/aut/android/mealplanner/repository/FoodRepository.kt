@@ -49,4 +49,7 @@ class FoodRepository(
         return food.copy(id = newId)
     }
 
+    suspend fun delete(food: Food) {
+        dao.delete(food.toEntity())
+    }
 }

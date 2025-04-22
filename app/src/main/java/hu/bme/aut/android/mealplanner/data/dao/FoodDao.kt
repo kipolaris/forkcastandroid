@@ -1,6 +1,7 @@
 package hu.bme.aut.android.mealplanner.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -26,4 +27,7 @@ interface FoodDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(food: FoodEntity): Long
+
+    @Delete
+    suspend fun delete(food: FoodEntity)
 }
