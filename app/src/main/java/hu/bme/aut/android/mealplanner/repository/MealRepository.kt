@@ -63,5 +63,9 @@ class MealRepository(
     suspend fun insertOrUpdate(meal: MealEntity) {
         mealDao.insert(meal)
     }
+
+    suspend fun cleanUpInvalidMeals() {
+        mealDao.deleteMealsWithMissingMealTime()
+    }
 }
 

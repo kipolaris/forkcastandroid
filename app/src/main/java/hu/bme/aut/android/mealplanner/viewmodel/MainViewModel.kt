@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.android.mealplanner.repository.DayRepository
+import hu.bme.aut.android.mealplanner.repository.MealRepository
 import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
 import hu.bme.aut.android.mealplanner.sync.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow

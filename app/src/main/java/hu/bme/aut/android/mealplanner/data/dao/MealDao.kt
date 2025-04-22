@@ -26,4 +26,11 @@ interface MealDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(meal: MealEntity)
+
+    @Query("""
+    DELETE FROM meals 
+    WHERE mealTimeId NOT IN (SELECT id FROM mealtimes)
+""")
+    suspend fun deleteMealsWithMissingMealTime()
+
 }

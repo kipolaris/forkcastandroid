@@ -104,7 +104,10 @@ fun DayScreen(navController: NavController, dayIndex: Int) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(4.dp),
+                                .padding(4.dp)
+                                .clickable {
+                                    day?.id?.let { viewModel.resetDayMeals(it) }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(

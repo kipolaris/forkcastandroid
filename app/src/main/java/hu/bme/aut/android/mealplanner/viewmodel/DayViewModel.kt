@@ -153,4 +153,17 @@ class DayViewModel @Inject constructor(
         }
     }
 
+    fun resetDayMeals(dayId: Long) {
+        viewModelScope.launch {
+            val day = _days.value.find { it.id == dayId } ?: return@launch
+
+            day.meals.forEach { meal ->
+                val clearedMeal = meal.copy(food = null)
+                mealRepository.insertOrUpdate(clearedMeal.toEntity())
+            }
+
+            _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }
+        }
+    }
+
 }
