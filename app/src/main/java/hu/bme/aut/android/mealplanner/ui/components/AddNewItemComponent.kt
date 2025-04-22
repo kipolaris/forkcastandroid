@@ -6,16 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,19 +18,21 @@ import androidx.compose.ui.unit.sp
 import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
 
 @Composable
-fun AddNewMealTimeComponent(
-    onAddMealTime: (String) -> Unit,
+fun AddNewItemComponent(
+    label: String,
+    addText: String,
+    onAddItem: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var newMealTimeName by remember { mutableStateOf("") }
+    var newItemName by remember { mutableStateOf("") }
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = {
                 Text(
-                    text = "New Meal Time",
+                    text = "New $label",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LobsterFont,
                         fontSize = 24.sp,
@@ -50,11 +44,11 @@ fun AddNewMealTimeComponent(
             },
             text = {
                 OutlinedTextField(
-                    value = newMealTimeName,
-                    onValueChange = { newMealTimeName = it },
+                    value = newItemName,
+                    onValueChange = { newItemName = it },
                     label = {
                         Text(
-                            text = "Enter name",
+                            text = "Enter $label name",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontFamily = LobsterFont,
                                 fontWeight = FontWeight.Light,
@@ -67,14 +61,14 @@ fun AddNewMealTimeComponent(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onAddMealTime(newMealTimeName.trim())
-                        newMealTimeName = ""
+                        onAddItem(newItemName.trim())
+                        newItemName = ""
                         showDialog = false
                     },
-                    Modifier.background(MaterialTheme.colorScheme.onBackground)
+                    modifier = Modifier.background(MaterialTheme.colorScheme.onBackground)
                 ) {
                     Text(
-                        text = "Add",
+                        "Add",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontFamily = LobsterFont,
                             fontWeight = FontWeight.Bold,
@@ -87,13 +81,13 @@ fun AddNewMealTimeComponent(
             dismissButton = {
                 TextButton(
                     onClick = {
-                        newMealTimeName = ""
+                        newItemName = ""
                         showDialog = false
                     },
-                    Modifier.background(MaterialTheme.colorScheme.onBackground)
+                    modifier = Modifier.background(MaterialTheme.colorScheme.onBackground)
                 ) {
                     Text(
-                        text = "Cancel",
+                        "Cancel",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontFamily = LobsterFont,
                             fontWeight = FontWeight.Bold,
@@ -106,23 +100,24 @@ fun AddNewMealTimeComponent(
         )
     }
 
-    Row(
-        modifier = modifier
+    TextButton(
+        onClick = { showDialog = true },
+        modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 8.dp)
             .border(0.5.dp, Color(0xFFc0b9a6))
-            .clickable { showDialog = true }
+            .background(MaterialTheme.colorScheme.onBackground)
     ) {
         Text(
-            text = "Add new meal time",
+            text = addText,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(4.dp)
                 .fillMaxWidth(),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontFamily = LobsterFont,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center
             )
         )

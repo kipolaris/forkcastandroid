@@ -8,19 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
 import hu.bme.aut.android.mealplanner.ui.components.ThemedBackground
-import androidx.compose.foundation.Image
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import hu.bme.aut.android.mealplanner.R
 import hu.bme.aut.android.mealplanner.ui.components.PageHeader
-import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
 
 @Composable
 fun MenuScreen(navController: NavController) {

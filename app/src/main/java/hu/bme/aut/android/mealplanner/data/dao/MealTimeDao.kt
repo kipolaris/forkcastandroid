@@ -23,8 +23,8 @@ interface MealTimeDao {
     suspend fun updateMealTime(mealTime: MealTimeEntity)
 
     @Insert
-    suspend fun insert(mealTimeEntity: MealTimeEntity): Long
+    suspend fun insert(mealTime: MealTimeEntity): Long
 
     @Delete
-    suspend fun delete(mealTimeEntity: MealTimeEntity)
+    suspend fun delete(mealTime: MealTimeEntity)
 }

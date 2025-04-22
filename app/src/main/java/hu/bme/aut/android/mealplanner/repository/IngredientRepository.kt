@@ -3,6 +3,7 @@ package hu.bme.aut.android.mealplanner.repository
 import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
 import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
+import hu.bme.aut.android.mealplanner.domain.model.Ingredient
 import hu.bme.aut.android.mealplanner.network.api.IngredientApi
 
 class IngredientRepository(
@@ -25,5 +26,17 @@ class IngredientRepository(
         } catch (e: Exception) {
             // TODO: handle failure case (maybe fallback to local cache)
         }
+    }
+
+    suspend fun update(ingredient: Ingredient) {
+        dao.updateIngredient(ingredient.toEntity())
+    }
+
+    suspend fun insert(ingredient: Ingredient): Long {
+        return dao.insert(ingredient.toEntity())
+    }
+
+    suspend fun delete(ingredient: Ingredient) {
+        dao.delete(ingredient.toEntity())
     }
 }

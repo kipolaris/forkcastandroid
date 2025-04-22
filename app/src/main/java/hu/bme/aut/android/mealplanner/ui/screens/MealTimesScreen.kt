@@ -38,8 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import hu.bme.aut.android.mealplanner.R
 import hu.bme.aut.android.mealplanner.domain.model.MealTime
-import hu.bme.aut.android.mealplanner.ui.components.AddNewMealTimeComponent
-import hu.bme.aut.android.mealplanner.ui.components.EditMealTimeDialog
+import hu.bme.aut.android.mealplanner.ui.components.AddNewItemComponent
+import hu.bme.aut.android.mealplanner.ui.components.EditNameDialog
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
 import hu.bme.aut.android.mealplanner.ui.components.PageHeader
 import hu.bme.aut.android.mealplanner.ui.components.ThemedBackground
@@ -54,9 +54,11 @@ fun MealTimesScreen(navController: NavController) {
     var mealTimeToEdit by remember { mutableStateOf<MealTime?>(null) }
 
     mealTimeToEdit?.let { mealTime ->
-        EditMealTimeDialog(
+        EditNameDialog(
+            title = "Edit Meal Time",
+            label = "Enter meal time name",
             initialName = mealTime.name,
-            onEditMealTime = { newName ->
+            onConfirm = { newName ->
                 viewModel.updateMealTime(mealTime.copy(name = newName))
                 mealTimeToEdit = null
             },
@@ -161,7 +163,11 @@ fun MealTimesScreen(navController: NavController) {
                     }
 
                     // Add new meal time button
-                    AddNewMealTimeComponent(onAddMealTime = { viewModel.addMealTime(it) })
+                    AddNewItemComponent(
+                        label = "Meal Time",
+                        addText = "Add new meal time",
+                        onAddItem = { viewModel.addMealTime(it) }
+                    )
                 }
 
                 // Tapes

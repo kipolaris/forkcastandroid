@@ -1,9 +1,11 @@
 package hu.bme.aut.android.mealplanner.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
 
 @Dao
@@ -16,5 +18,14 @@ interface IngredientDao {
 
     @Query("DELETE FROM ingredients")
     suspend fun deleteAll()
+
+    @Update
+    suspend fun updateIngredient(ingredient: IngredientEntity)
+
+    @Insert
+    suspend fun insert(ingredient: IngredientEntity): Long
+
+    @Delete
+    suspend fun delete(ingredient: IngredientEntity)
 }
 

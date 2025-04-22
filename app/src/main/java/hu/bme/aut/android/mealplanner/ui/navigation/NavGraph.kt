@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import hu.bme.aut.android.mealplanner.ui.screens.MenuScreen
 import hu.bme.aut.android.mealplanner.ui.screens.DayScreen
 import hu.bme.aut.android.mealplanner.ui.screens.FoodsScreen
+import hu.bme.aut.android.mealplanner.ui.screens.IngredientsScreen
 import hu.bme.aut.android.mealplanner.ui.screens.MealTimesScreen
 
 //import hu.bme.aut.android.mealplanner.ui.screens.MealTimePageScreen
@@ -26,6 +27,9 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("foods") {
             FoodsScreen(navController)
+        }
+        composable("ingredients") {
+            IngredientsScreen(navController)
         }
     }
 }

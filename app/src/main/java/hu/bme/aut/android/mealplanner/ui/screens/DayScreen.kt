@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import hu.bme.aut.android.mealplanner.R
-import hu.bme.aut.android.mealplanner.ui.components.AddNewMealTimeComponent
+import hu.bme.aut.android.mealplanner.ui.components.AddNewItemComponent
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
 import hu.bme.aut.android.mealplanner.ui.components.PageHeader
 import hu.bme.aut.android.mealplanner.ui.components.SelectOrCreateFoodDialog
@@ -240,8 +240,10 @@ fun DayScreen(navController: NavController, dayIndex: Int) {
                     }
 
                     // Add new meal time
-                    AddNewMealTimeComponent(
-                        onAddMealTime = { viewModel.addMealTime(it) }
+                    AddNewItemComponent(
+                        label = "Meal Time",
+                        addText = "Add new meal time",
+                        onAddItem = { viewModel.addMealTime(it) }
                     )
                 }
 

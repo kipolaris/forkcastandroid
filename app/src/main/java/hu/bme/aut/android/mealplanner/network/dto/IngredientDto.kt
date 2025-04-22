@@ -3,5 +3,5 @@ package hu.bme.aut.android.mealplanner.network.dto
 data class IngredientDto(
     val id: Long,
     val name: String,
-    val quantity: String
+    val quantity: String?
 )
