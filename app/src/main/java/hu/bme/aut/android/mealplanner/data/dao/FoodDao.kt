@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import hu.bme.aut.android.mealplanner.data.entity.FoodEntity
 import hu.bme.aut.android.mealplanner.data.entity.FoodWithIngredients
+import hu.bme.aut.android.mealplanner.domain.model.Food
 
 @Dao
 interface FoodDao {
@@ -22,4 +23,7 @@ interface FoodDao {
     @Transaction
     @Query("SELECT * FROM foods")
     suspend fun getAllWithIngredients(): List<FoodWithIngredients>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(food: FoodEntity): Long
 }

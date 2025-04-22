@@ -5,7 +5,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import hu.bme.aut.android.mealplanner.ui.screens.MenuScreen
-import hu.bme.aut.android.mealplanner.ui.screens.DayPageScreen
+import hu.bme.aut.android.mealplanner.ui.screens.DayScreen
+import hu.bme.aut.android.mealplanner.ui.screens.MealTimesScreen
+
 //import hu.bme.aut.android.mealplanner.ui.screens.MealTimePageScreen
 
 @Composable
@@ -16,11 +18,10 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("dayPage/{dayIndex}") { backStackEntry ->
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toIntOrNull() ?: 0
-            DayPageScreen(navController, dayIndex)
+            DayScreen(navController, dayIndex)
         }
-        /*composable("mealTimePage/{mealTimeIndex}") { backStackEntry ->
-            val mealTimeIndex = backStackEntry.arguments?.getString("mealTimeIndex")?.toIntOrNull() ?: 0
-            MealTimePageScreen(navController, mealTimeIndex)
-        }*/
+        composable("mealTimes") {
+            MealTimesScreen(navController)
+        }
     }
 }

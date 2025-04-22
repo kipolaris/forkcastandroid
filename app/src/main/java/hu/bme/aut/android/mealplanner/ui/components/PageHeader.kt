@@ -26,8 +26,8 @@ fun PageHeader(
 ) {
     Box(
         modifier = Modifier
-            .height(70.dp)
-            .width(280.dp)
+            .height(90.dp)
+            .width(310.dp)
             .padding(bottom = 24.dp)
     ) {
         Image(
@@ -44,28 +44,38 @@ fun PageHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = { onPreviousClick?.invoke() }, enabled = onPreviousClick != null) {
-                Image(
-                    painter = painterResource(id = R.drawable.arrowleft),
-                    contentDescription = "Previous",
-                    modifier = Modifier.size(32.dp)
-                )
+            if (onPreviousClick != null) {
+                IconButton(onClick = onPreviousClick) {
+                    Image(
+                        painter = painterResource(id = R.drawable.arrowleft),
+                        contentDescription = "Previous",
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.size(32.dp))
             }
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontFamily = LobsterFont,
-                    fontSize = 28.sp,
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Normal,
                     color = Color(0xFFFF78A8)
                 )
             )
-            IconButton(onClick = { onNextClick?.invoke() }, enabled = onNextClick != null) {
-                Image(
-                    painter = painterResource(id = R.drawable.arrowright),
-                    contentDescription = "Next",
-                    modifier = Modifier.size(32.dp)
-                )
+
+            if (onNextClick != null) {
+                IconButton(onClick = onNextClick) {
+                    Image(
+                        painter = painterResource(id = R.drawable.arrowright),
+                        contentDescription = "Next",
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.size(32.dp)) // placeholder to maintain layout
             }
         }
 

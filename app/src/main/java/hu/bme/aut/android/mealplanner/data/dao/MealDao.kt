@@ -23,4 +23,7 @@ interface MealDao {
     @Transaction
     @Query("SELECT * FROM meals WHERE dayId = :dayId")
     suspend fun getMealsWithFoodByDayId(dayId: Long): List<MealWithFood>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(meal: MealEntity)
 }

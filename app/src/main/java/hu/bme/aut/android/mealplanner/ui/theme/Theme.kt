@@ -26,7 +26,7 @@ private val LightColorScheme = lightColorScheme(
     surface = Color.White,
     onSurface = Color(0xFFFF78A8),
     onPrimary = Color.White,
-    onSecondary = Color.White
+    onSecondary = Color(0xFFc0b9a6)
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -45,13 +45,15 @@ private val DarkColorScheme = darkColorScheme(
 
 val LobsterFont = FontFamily(Font(R.font.lobsterregular))
 
+val PatrickHandFont = FontFamily(Font(R.font.patrickhand))
+
 val AppTypography = Typography(
     titleLarge = TextStyle(
         fontFamily = LobsterFont,
         fontSize = 28.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = LobsterFont,
+        fontFamily = PatrickHandFont,
         fontSize = 22.sp
     )
 )

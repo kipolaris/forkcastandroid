@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "meals")
 data class MealEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val foodId: Long?,
     val mealTimeId: Long,
     val dayId: Long

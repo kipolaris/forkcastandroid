@@ -3,6 +3,7 @@ package hu.bme.aut.android.mealplanner.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,15 +20,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import hu.bme.aut.android.mealplanner.R
+import hu.bme.aut.android.mealplanner.ui.components.AddNewMealTimeComponent
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
 import hu.bme.aut.android.mealplanner.ui.components.PageHeader
+import hu.bme.aut.android.mealplanner.ui.components.SelectOrCreateFoodDialog
 import hu.bme.aut.android.mealplanner.ui.components.ThemedBackground
 import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
-import hu.bme.aut.android.mealplanner.viewmodel.DayPageViewModel
+import hu.bme.aut.android.mealplanner.ui.theme.PatrickHandFont
+import hu.bme.aut.android.mealplanner.viewmodel.DayViewModel
 
 @Composable
-fun DayPageScreen(navController: NavController, dayIndex: Int) {
-    val viewModel: DayPageViewModel = hiltViewModel()
+fun DayScreen(navController: NavController, dayIndex: Int) {
+    val viewModel: DayViewModel = hiltViewModel()
 
     LaunchedEffect(dayIndex) {
         viewModel.setDayIndex(dayIndex)
@@ -35,7 +39,29 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
 
     val day by viewModel.currentDay.collectAsState()
     val mealTimes by viewModel.mealTimes.collectAsState()
-    val currentIndex by viewModel.currentDayIndex.collectAsState()
+    val savedFoods by viewModel.savedFoods.collectAsState()
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedDayId by remember { mutableStateOf<Long?>(null) }
+    var selectedMealTimeId by remember { mutableStateOf<Long?>(null) }
+
+    if (showDialog) {
+        SelectOrCreateFoodDialog(
+            existingFoods = savedFoods,
+            onDismiss = { showDialog = false },
+            onFoodSelected = { selectedFood ->
+                viewModel.assignFoodToMeal(selectedDayId!!, selectedMealTimeId!!, selectedFood)
+                showDialog = false
+            },
+            onAddNewFood = { name, desc, onSaved ->
+                viewModel.saveNewFood(name, desc) { savedFood ->
+                    viewModel.assignFoodToMeal(selectedDayId!!, selectedMealTimeId!!, savedFood)
+                    showDialog = false
+                }
+            }
+
+        )
+    }
 
     ThemedBackground {
         Column(
@@ -72,13 +98,14 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(0.5.dp, Color(0xFFc0b9a6)),
+                            .border(0.5.dp, MaterialTheme.colorScheme.onSecondary),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(4.dp)
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Reset",
@@ -86,7 +113,8 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                                     fontFamily = LobsterFont,
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center
                                 )
                             )
                         }
@@ -94,12 +122,13 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                             modifier = Modifier
                                 .width(1.dp)
                                 .heightIn(min = 36.dp)
-                                .background(Color(0xFFc0b9a6))
+                                .background(MaterialTheme.colorScheme.onSecondary)
                         )
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(4.dp)
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Meals",
@@ -107,26 +136,61 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                                     fontFamily = LobsterFont,
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center
                                 )
                             )
                         }
                     }
 
-                    mealTimes.forEach { mealTime ->
+                    mealTimes.sortedBy { it.order }.forEachIndexed { index, mealTime ->
                         val foodName = day?.meals?.firstOrNull { it.mealTime.id == mealTime.id }?.food?.name
 
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(0.5.dp, Color(0xFFc0b9a6)),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(
+                            Row(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(4.dp)
+                                    .padding(4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
                             ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    if (index > 0) {
+                                        IconButton(
+                                            onClick = { viewModel.moveMealTimeUp(mealTime) },
+                                            modifier = Modifier.size(20.dp)
+                                        ) {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.arrowup),
+                                                contentDescription = "Up",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                    }
+                                    if (index < mealTimes.size - 1) {
+                                        IconButton(
+                                            onClick = { viewModel.moveMealTimeDown(mealTime) },
+                                            modifier = Modifier.size(20.dp)
+                                        ) {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.arrowdown),
+                                                contentDescription = "Down",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(6.dp))
+
                                 Text(
                                     text = mealTime.name,
                                     style = MaterialTheme.typography.bodyMedium.copy(
@@ -138,10 +202,11 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                                 )
                             }
 
+
                             Box(
                                 modifier = Modifier
                                     .width(1.dp)
-                                    .heightIn(min = 36.dp)
+                                    .heightIn(min = 46.dp)
                                     .background(Color(0xFFc0b9a6))
                             )
 
@@ -149,41 +214,32 @@ fun DayPageScreen(navController: NavController, dayIndex: Int) {
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(4.dp)
+                                    .clickable {
+                                        selectedMealTimeId = mealTime.id
+                                        selectedDayId = day?.id
+                                        showDialog = true
+                                    },
+                                contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = foodName ?: "",
                                     style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontFamily = LobsterFont,
+                                        fontFamily = PatrickHandFont,
                                         fontSize = 20.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        color = MaterialTheme.colorScheme.onBackground
+                                        fontWeight = FontWeight.Light,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center
                                     )
                                 )
                             }
+
                         }
                     }
 
                     // Add new meal time
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(0.5.dp, Color(0xFFc0b9a6))
-                    ) {
-                        Text(
-                            text = "Add new meal time",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(4.dp)
-                                .fillMaxWidth(),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontFamily = LobsterFont,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            )
-                        )
-                    }
+                    AddNewMealTimeComponent(
+                        onAddMealTime = { viewModel.addMealTime(it) }
+                    )
                 }
 
                 // Tapes on table corners

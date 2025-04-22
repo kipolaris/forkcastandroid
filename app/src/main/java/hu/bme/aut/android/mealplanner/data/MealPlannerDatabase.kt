@@ -25,7 +25,7 @@ import hu.bme.aut.android.mealplanner.data.entity.FoodIngredientCrossRef
         MealTimeEntity::class,
         FoodIngredientCrossRef::class
     ],
-    version = 1
+    version = 2
 )
 abstract class MealPlannerDatabase : RoomDatabase() {
 

@@ -8,22 +8,21 @@ import hu.bme.aut.android.mealplanner.data.entity.MealWithFood
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
 import hu.bme.aut.android.mealplanner.network.api.MealApi
 import hu.bme.aut.android.mealplanner.network.dto.MealDto
-import retrofit2.Response
 
 class MealRepository(
     private val api: MealApi,
-    private val dao: MealDao,
+    private val mealDao: MealDao,
     private val dayDao: DayDao
 ) {
 
     suspend fun getMeals(): List<MealEntity> {
         return try {
             val remote = api.getAllMeals().map { it.toEntity() }
-            dao.deleteAll()
-            dao.insertAll(remote)
+            mealDao.deleteAll()
+            mealDao.insertAll(remote)
             remote
         } catch (e: Exception) {
-            dao.getAll() // fallback
+            mealDao.getAll() // fallback
         }
     }
 
@@ -52,12 +51,17 @@ class MealRepository(
     }
 
     suspend fun getMealsForDay(dayId: Long): List<MealWithFood> {
-        return dao.getMealsWithFoodByDayId(dayId)
+        return mealDao.getMealsWithFoodByDayId(dayId)
     }
 
     suspend fun getDayWithFullMeals(dayId: Long): DayWithFullMeals {
         val day = dayDao.getDayById(dayId)
-        val meals = dao.getMealsWithFoodByDayId(dayId)
+        val meals = mealDao.getMealsWithFoodByDayId(dayId)
         return DayWithFullMeals(day, meals)
     }
+
+    suspend fun insertOrUpdate(meal: MealEntity) {
+        mealDao.insert(meal)
+    }
 }
+

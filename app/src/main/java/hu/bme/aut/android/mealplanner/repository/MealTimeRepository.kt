@@ -3,6 +3,7 @@ package hu.bme.aut.android.mealplanner.repository
 import hu.bme.aut.android.mealplanner.data.dao.MealTimeDao
 import hu.bme.aut.android.mealplanner.data.entity.MealTimeEntity
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
+import hu.bme.aut.android.mealplanner.domain.model.MealTime
 import hu.bme.aut.android.mealplanner.network.api.MealTimeApi
 
 class MealTimeRepository(
@@ -37,4 +38,15 @@ class MealTimeRepository(
         }
     }
 
+    suspend fun update(mealTime: MealTime) {
+        dao.updateMealTime(mealTime.toEntity())
+    }
+
+    suspend fun insert(mealTime: MealTime): Long {
+        return dao.insert(mealTime.toEntity())
+    }
+
+    suspend fun delete(mealTime: MealTime) {
+        dao.delete(mealTime.toEntity())
+    }
 }

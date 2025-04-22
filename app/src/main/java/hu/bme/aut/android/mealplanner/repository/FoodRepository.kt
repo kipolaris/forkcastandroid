@@ -4,7 +4,9 @@ import hu.bme.aut.android.mealplanner.data.dao.FoodDao
 import hu.bme.aut.android.mealplanner.data.dao.FoodIngredientCrossRefDao
 import hu.bme.aut.android.mealplanner.data.entity.FoodEntity
 import hu.bme.aut.android.mealplanner.data.entity.FoodIngredientCrossRef
+import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
+import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.network.api.FoodApi
 
 class FoodRepository(
@@ -40,4 +42,11 @@ class FoodRepository(
             // TODO fallback logic
         }
     }
+
+    suspend fun insert(food: Food): Food {
+        val foodEntity = food.toEntity()
+        val newId = dao.insert(foodEntity)
+        return food.copy(id = newId)
+    }
+
 }
