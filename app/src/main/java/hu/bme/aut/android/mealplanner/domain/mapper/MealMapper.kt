@@ -1,6 +1,7 @@
 package hu.bme.aut.android.mealplanner.domain.mapper
 
 import hu.bme.aut.android.mealplanner.data.entity.*
+import hu.bme.aut.android.mealplanner.data.relation.MealWithFood
 import hu.bme.aut.android.mealplanner.domain.model.Meal
 import hu.bme.aut.android.mealplanner.network.dto.MealDto
 

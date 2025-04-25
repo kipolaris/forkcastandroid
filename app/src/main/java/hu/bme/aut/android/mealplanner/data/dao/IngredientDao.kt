@@ -13,6 +13,9 @@ interface IngredientDao {
     @Query("SELECT * FROM ingredients")
     suspend fun getAll(): List<IngredientEntity>
 
+    @Query("SELECT * FROM ingredients WHERE id = :id")
+    suspend fun getById(id: Long): IngredientEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<IngredientEntity>)
 

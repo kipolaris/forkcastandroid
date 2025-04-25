@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import hu.bme.aut.android.mealplanner.data.entity.FoodIngredientCrossRef
+import hu.bme.aut.android.mealplanner.data.relation.FoodIngredientCrossRef
 
 @Dao
 interface FoodIngredientCrossRefDao {
@@ -13,4 +13,7 @@ interface FoodIngredientCrossRefDao {
 
     @Query("DELETE FROM food_ingredient_cross_ref")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM food_ingredient_cross_ref WHERE foodId = :foodId")
+    suspend fun deleteForFood(foodId: Long)
 }

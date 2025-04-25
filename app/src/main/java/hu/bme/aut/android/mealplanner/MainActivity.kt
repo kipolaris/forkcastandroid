@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.mealplanner.ui.navigation.NavGraph
+import hu.bme.aut.android.mealplanner.ui.screens.SplashScreen
 import hu.bme.aut.android.mealplanner.ui.theme.MealPlannerTheme
 import hu.bme.aut.android.mealplanner.viewmodel.MainViewModel
 
@@ -21,9 +22,7 @@ class MainActivity : ComponentActivity() {
             val isLoading by viewModel.isLoading.collectAsState()
 
             if (isLoading) {
-                Surface {
-                    CircularProgressIndicator()
-                }
+                SplashScreen()
             } else {
                 val navController = rememberNavController()
                 MealPlannerTheme {

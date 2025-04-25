@@ -14,7 +14,7 @@ import hu.bme.aut.android.mealplanner.data.entity.MealEntity
 import hu.bme.aut.android.mealplanner.data.entity.MealTimeEntity
 
 import hu.bme.aut.android.mealplanner.data.dao.FoodIngredientCrossRefDao
-import hu.bme.aut.android.mealplanner.data.entity.FoodIngredientCrossRef
+import hu.bme.aut.android.mealplanner.data.relation.FoodIngredientCrossRef
 
 @Database(
     entities = [
@@ -25,7 +25,7 @@ import hu.bme.aut.android.mealplanner.data.entity.FoodIngredientCrossRef
         MealTimeEntity::class,
         FoodIngredientCrossRef::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class MealPlannerDatabase : RoomDatabase() {

@@ -4,6 +4,7 @@ package hu.bme.aut.android.mealplanner.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,7 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import hu.bme.aut.android.mealplanner.R
-import hu.bme.aut.android.mealplanner.ui.components.AddNewFoodDialog
+import hu.bme.aut.android.mealplanner.domain.model.Food
+import hu.bme.aut.android.mealplanner.ui.components.AddNewItemDialog
+import hu.bme.aut.android.mealplanner.ui.components.EditNameDialog
 import hu.bme.aut.android.mealplanner.ui.components.ThemedBackground
 import hu.bme.aut.android.mealplanner.viewmodel.FoodsViewModel
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
@@ -56,12 +59,31 @@ fun FoodsScreen(navController: NavController) {
     var showAddDialog by remember { mutableStateOf(false) }
 
     if (showAddDialog) {
-        AddNewFoodDialog(
+        AddNewItemDialog(
+            label = "food",
+            nameLabel = "Food name",
+            descLabel = "Description",
             onDismiss = { showAddDialog = false },
             onSave = { name, desc ->
                 viewModel.addFood(name, desc)
                 showAddDialog = false
             }
+        )
+    }
+
+    var foodToEdit by remember { mutableStateOf<Food?>(null) }
+
+    foodToEdit?.let { food ->
+        EditNameDialog(
+            title = "Edit Food's name",
+            label = "Enter food name",
+            initialName = food.name,
+            onConfirm = { newName ->
+                viewModel.editFoodName(food.copy(name = newName))
+                foodToEdit = null
+
+            },
+            onDismiss = { foodToEdit = null }
         )
     }
 
@@ -101,6 +123,7 @@ fun FoodsScreen(navController: NavController) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(0.5.dp, Color(0xFFc0b9a6))
+                                    .clickable { navController.navigate("food/${food.id}") }
                                     .padding(horizontal = 4.dp, vertical = 6.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -114,6 +137,12 @@ fun FoodsScreen(navController: NavController) {
                                     ),
                                     modifier = Modifier.weight(1f)
                                 )
+                                IconButton(onClick = { foodToEdit = food }) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.pencil),
+                                        contentDescription = "Edit"
+                                    )
+                                }
                                 IconButton(onClick = { viewModel.deleteFood(food) }) {
                                     Image(
                                         painter = painterResource(id = R.drawable.trashcan),

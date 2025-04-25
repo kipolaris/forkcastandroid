@@ -2,6 +2,7 @@ package hu.bme.aut.android.mealplanner.repository
 
 import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
 import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
+import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
 import hu.bme.aut.android.mealplanner.domain.model.Ingredient
 import hu.bme.aut.android.mealplanner.network.api.IngredientApi
@@ -10,6 +11,10 @@ class IngredientRepository(
     private val api: IngredientApi,
     private val dao: IngredientDao
 ) {
+    suspend fun getById(id: Long): Ingredient {
+        return dao.getById(id).toDomain()
+    }
+
     suspend fun getAll(): List<IngredientEntity> = dao.getAll()
 
     suspend fun insertAll(items: List<IngredientEntity>) = dao.insertAll(items)
@@ -33,7 +38,7 @@ class IngredientRepository(
     }
 
     suspend fun insert(ingredient: Ingredient): Long {
-        return dao.insert(ingredient.toEntity())
+        return dao.insert(IngredientEntity(id = 0L, name = ingredient.name))
     }
 
     suspend fun delete(ingredient: Ingredient) {

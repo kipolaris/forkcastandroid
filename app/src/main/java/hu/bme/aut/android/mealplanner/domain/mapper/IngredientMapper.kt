@@ -6,26 +6,24 @@ import hu.bme.aut.android.mealplanner.network.dto.IngredientDto
 
 fun IngredientDto.toEntity(): IngredientEntity = IngredientEntity(
     id = this.id,
-    name = this.name,
-    quantity = this.quantity,
+    name = this.name
 )
 
 fun IngredientEntity.toDto(): IngredientDto = IngredientDto(
     id = this.id,
     name = this.name,
-    quantity = this.quantity
+    quantity = null
 )
 
 fun IngredientEntity.toDomain(): Ingredient = Ingredient(
     id = id,
     name = name,
-    quantity = quantity
+    quantity = null
 )
 
 fun Ingredient.toEntity(): IngredientEntity = IngredientEntity(
     id = id,
-    name = name,
-    quantity = quantity
+    name = name
 )
 
 fun Ingredient.toDto(): IngredientDto = IngredientDto(

@@ -121,8 +121,10 @@ object AppModule {
     fun provideDayRepository(
         api: DayApi,
         dayDao: DayDao,
-        mealDao: MealDao
-    ): DayRepository = DayRepository(api, dayDao, mealDao)
+        mealDao: MealDao,
+        foodDao: FoodDao,
+        mealTimeDao: MealTimeDao
+    ): DayRepository = DayRepository(api, dayDao, mealDao, foodDao, mealTimeDao)
 
     @Provides
     @Singleton

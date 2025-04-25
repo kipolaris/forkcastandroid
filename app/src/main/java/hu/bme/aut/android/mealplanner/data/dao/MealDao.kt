@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import hu.bme.aut.android.mealplanner.data.entity.MealEntity
-import hu.bme.aut.android.mealplanner.data.entity.MealWithFood
+import hu.bme.aut.android.mealplanner.data.relation.MealWithFood
 
 @Dao
 interface MealDao {
@@ -30,7 +30,7 @@ interface MealDao {
     @Query("""
     DELETE FROM meals 
     WHERE mealTimeId NOT IN (SELECT id FROM mealtimes)
-""")
+    """)
     suspend fun deleteMealsWithMissingMealTime()
 
 }

@@ -1,7 +1,6 @@
-package hu.bme.aut.android.mealplanner.data.entity
+package hu.bme.aut.android.mealplanner.data.relation
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Index
 
 @Entity(
@@ -14,5 +13,6 @@ import androidx.room.Index
 )
 data class FoodIngredientCrossRef(
     val foodId: Long,
-    val ingredientId: Long
+    val ingredientId: Long,
+    val quantity: String? = null
 )

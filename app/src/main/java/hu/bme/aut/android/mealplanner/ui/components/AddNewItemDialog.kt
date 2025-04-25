@@ -6,16 +6,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
 import hu.bme.aut.android.mealplanner.ui.theme.PatrickHandFont
 
 @Composable
-fun AddNewFoodDialog(
+fun AddNewItemDialog(
+    label: String,
+    nameLabel: String,
+    descLabel: String,
     onDismiss: () -> Unit,
-    onSave: (name: String, description: String) -> Unit
+    onSave: (String, String) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -23,7 +25,7 @@ fun AddNewFoodDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Add new food", fontFamily = LobsterFont, fontSize = 24.sp)
+            Text("Add new $label", fontFamily = LobsterFont, fontSize = 24.sp)
         },
         text = {
             Column {
@@ -32,7 +34,7 @@ fun AddNewFoodDialog(
                     onValueChange = { name = it },
                     label = {
                         Text(
-                            "Food name",
+                            nameLabel,
                             fontFamily = PatrickHandFont,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -49,7 +51,7 @@ fun AddNewFoodDialog(
                     onValueChange = { description = it },
                     label = {
                         Text(
-                            "Description",
+                            descLabel,
                             fontFamily = PatrickHandFont,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -77,8 +79,7 @@ fun AddNewFoodDialog(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LobsterFont,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
@@ -93,11 +94,11 @@ fun AddNewFoodDialog(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LobsterFont,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
         }
     )
 }
+

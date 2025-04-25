@@ -4,5 +4,5 @@ data class Food(
     val id: Long,
     val name: String,
     val description: String?,
-    val ingredients: List<Ingredient>
+    val ingredients: List<Ingredient>?
 )

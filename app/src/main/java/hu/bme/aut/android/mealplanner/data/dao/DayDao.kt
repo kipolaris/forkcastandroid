@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import hu.bme.aut.android.mealplanner.data.entity.DayEntity
-import hu.bme.aut.android.mealplanner.data.entity.DayWithFullMeals
-import hu.bme.aut.android.mealplanner.data.entity.DayWithMeals
+import hu.bme.aut.android.mealplanner.data.relation.DayWithFullMeals
+import hu.bme.aut.android.mealplanner.data.relation.DayWithMeals
 
 @Dao
 interface DayDao {

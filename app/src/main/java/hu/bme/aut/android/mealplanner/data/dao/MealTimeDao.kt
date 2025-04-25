@@ -13,6 +13,9 @@ interface MealTimeDao {
     @Query("SELECT * FROM mealtimes")
     suspend fun getAll(): List<MealTimeEntity>
 
+    @Query("SELECT * FROM mealtimes WHERE id = :mealTimeId")
+    suspend fun getById(mealTimeId: Long): MealTimeEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<MealTimeEntity>)
 

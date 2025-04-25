@@ -33,24 +33,30 @@ import hu.bme.aut.android.mealplanner.ui.theme.PatrickHandFont
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectOrCreateFoodDialog(
-    existingFoods: List<Food>,
+fun <T> SelectOrCreateItemDialog(
+    label: String,
+    items: List<T>,
+    getItemName: (T) -> String,
     onDismiss: () -> Unit,
-    onFoodSelected: (Food) -> Unit,
-    onAddNewFood: (String, String, (Food) -> Unit) -> Unit
+    onItemSelected: (T) -> Unit,
+    onAddNewItem: (String, String, (T) -> Unit) -> Unit
 ) {
     var isAddingNew by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
-    var selectedFood: Food? by remember { mutableStateOf(null) }
+    var selectedItem: T? by remember { mutableStateOf(null) }
 
     if (isAddingNew) {
-        AddNewFoodDialog(
+        AddNewItemDialog(
+            label = label,
+            nameLabel = "$label name",
+            descLabel = if (label.lowercase() == "ingredient") "Quantity" else "Description",
             onDismiss = { isAddingNew = false },
             onSave = { name, desc ->
-                onAddNewFood(name, desc) { savedFood ->
-                    onFoodSelected(savedFood)
+                onAddNewItem(name, desc) { newItem ->
+                    selectedItem = newItem
+                    onItemSelected(newItem)
+                    isAddingNew = false
                 }
-                isAddingNew = false
             }
         )
         return
@@ -59,7 +65,7 @@ fun SelectOrCreateFoodDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Select a food", fontFamily = LobsterFont, fontSize = 24.sp)
+            Text("Select a $label", fontFamily = LobsterFont, fontSize = 24.sp)
         },
         text = {
             Column {
@@ -68,7 +74,7 @@ fun SelectOrCreateFoodDialog(
                     onExpandedChange = { expanded = !expanded },
                 ) {
                     OutlinedTextField(
-                        value = selectedFood?.name ?: "Select a food",
+                        value = selectedItem?.let(getItemName) ?: "Select a $label",
                         onValueChange = {},
                         readOnly = true,
                         modifier = Modifier
@@ -85,13 +91,13 @@ fun SelectOrCreateFoodDialog(
                         onDismissRequest = { expanded = false },
                         modifier = Modifier.heightIn(max = 300.dp)
                     ) {
-                        existingFoods.sortedBy { it.name }.forEach { food ->
+                        items.sortedBy(getItemName).forEach { item ->
                             DropdownMenuItem(
-                                text = { Text(food.name, fontFamily = PatrickHandFont) },
+                                text = { Text(getItemName(item), fontFamily = PatrickHandFont) },
                                 onClick = {
-                                    selectedFood = food
+                                    selectedItem = item
                                     expanded = false
-                                    onFoodSelected(food)
+                                    onItemSelected(item)
                                 },
                                 modifier = Modifier.border(0.5.dp, MaterialTheme.colorScheme.onSecondary)
                             )
@@ -131,13 +137,13 @@ fun SelectOrCreateFoodDialog(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LobsterFont,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
         }
     )
 }
+
 
 

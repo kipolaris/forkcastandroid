@@ -2,9 +2,9 @@ package hu.bme.aut.android.mealplanner.repository
 
 import hu.bme.aut.android.mealplanner.data.dao.DayDao
 import hu.bme.aut.android.mealplanner.data.dao.MealDao
-import hu.bme.aut.android.mealplanner.data.entity.DayWithFullMeals
+import hu.bme.aut.android.mealplanner.data.relation.DayWithFullMeals
 import hu.bme.aut.android.mealplanner.data.entity.MealEntity
-import hu.bme.aut.android.mealplanner.data.entity.MealWithFood
+import hu.bme.aut.android.mealplanner.data.relation.MealWithFood
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
 import hu.bme.aut.android.mealplanner.network.api.MealApi
 import hu.bme.aut.android.mealplanner.network.dto.MealDto
@@ -62,10 +62,6 @@ class MealRepository(
 
     suspend fun insertOrUpdate(meal: MealEntity) {
         mealDao.insert(meal)
-    }
-
-    suspend fun cleanUpInvalidMeals() {
-        mealDao.deleteMealsWithMissingMealTime()
     }
 }
 

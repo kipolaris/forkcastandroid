@@ -39,4 +39,11 @@ class FoodsViewModel @Inject constructor(
             _foods.value = foodRepository.getAll().map { it.toDomain() }
         }
     }
+
+    fun editFoodName(food: Food) {
+        viewModelScope.launch {
+            foodRepository.update(food)
+            _foods.value = foodRepository.getAll().map { it.toDomain() }
+        }
+    }
 }

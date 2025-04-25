@@ -23,7 +23,7 @@ import hu.bme.aut.android.mealplanner.R
 import hu.bme.aut.android.mealplanner.ui.components.AddNewItemComponent
 import hu.bme.aut.android.mealplanner.ui.components.MenuButton
 import hu.bme.aut.android.mealplanner.ui.components.PageHeader
-import hu.bme.aut.android.mealplanner.ui.components.SelectOrCreateFoodDialog
+import hu.bme.aut.android.mealplanner.ui.components.SelectOrCreateItemDialog
 import hu.bme.aut.android.mealplanner.ui.components.ThemedBackground
 import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
 import hu.bme.aut.android.mealplanner.ui.theme.PatrickHandFont
@@ -46,20 +46,21 @@ fun DayScreen(navController: NavController, dayIndex: Int) {
     var selectedMealTimeId by remember { mutableStateOf<Long?>(null) }
 
     if (showDialog) {
-        SelectOrCreateFoodDialog(
-            existingFoods = savedFoods,
+        SelectOrCreateItemDialog(
+            label = "Food",
+            items = savedFoods,
             onDismiss = { showDialog = false },
-            onFoodSelected = { selectedFood ->
+            onItemSelected = { selectedFood ->
                 viewModel.assignFoodToMeal(selectedDayId!!, selectedMealTimeId!!, selectedFood)
                 showDialog = false
             },
-            onAddNewFood = { name, desc, onSaved ->
+            onAddNewItem = { name, desc, onSaved ->
                 viewModel.saveNewFood(name, desc) { savedFood ->
                     viewModel.assignFoodToMeal(selectedDayId!!, selectedMealTimeId!!, savedFood)
                     showDialog = false
                 }
-            }
-
+            },
+            getItemName = { it.name }
         )
     }
 
