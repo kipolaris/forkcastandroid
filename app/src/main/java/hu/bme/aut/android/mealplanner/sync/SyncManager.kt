@@ -11,19 +11,15 @@ class SyncManager @Inject constructor(
     private val foodRepository: FoodRepository,
     private val ingredientRepository: IngredientRepository,
     private val dayRepository: DayRepository,
-    private val mealTimeRepository: MealTimeRepository
+    private val mealTimeRepository: MealTimeRepository,
 ) {
     suspend fun syncAll() {
         try {
-            // Sync nested structure from backend
-            mealPlanRepository.syncMealPlan()
-
-            // Sync global entities
             foodRepository.syncFoods()
             ingredientRepository.syncIngredients()
-            dayRepository.syncDays()
             mealTimeRepository.syncMealTimes()
-
+            dayRepository.syncDays()
+            mealPlanRepository.syncMealPlan()
             Log.d("SyncManager", "Sync completed successfully")
         } catch (e: Exception) {
             Log.e("SyncManager", "Sync failed", e)

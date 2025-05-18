@@ -1,5 +1,6 @@
 package hu.bme.aut.android.mealplanner.repository
 
+import android.util.Log
 import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
 import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
@@ -30,7 +31,7 @@ class IngredientRepository(
             dao.deleteAll()
             dao.insertAll(ingredientEntities)
         } catch (e: Exception) {
-            // TODO: handle failure case (maybe fallback to local cache)
+            Log.e("SyncCheck", "syncIngredients failed", e)
         }
     }
 

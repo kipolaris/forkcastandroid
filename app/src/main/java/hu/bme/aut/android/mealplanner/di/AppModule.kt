@@ -100,8 +100,12 @@ object AppModule {
         api: MealPlanApi,
         mealDao: MealDao,
         mealTimeDao: MealTimeDao,
-        dayDao: DayDao
-    ): MealPlanRepository = MealPlanRepository(api, dayDao, mealDao, mealTimeDao)
+        dayDao: DayDao,
+        foodDao: FoodDao,
+        foodRepository: FoodRepository,
+        ingredientDao: IngredientDao,
+        ingredientRepository: IngredientRepository
+    ): MealPlanRepository = MealPlanRepository(api, dayDao, mealDao, mealTimeDao, foodDao, foodRepository, ingredientDao, ingredientRepository)
 
     @Provides
     @Singleton

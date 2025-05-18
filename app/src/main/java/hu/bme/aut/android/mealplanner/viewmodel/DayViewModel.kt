@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
+import hu.bme.aut.android.mealplanner.domain.mapper.toDto
 import hu.bme.aut.android.mealplanner.domain.model.Day
 import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.domain.model.Meal
 import hu.bme.aut.android.mealplanner.domain.model.MealTime
+import hu.bme.aut.android.mealplanner.network.dto.MealPlanDto
 import hu.bme.aut.android.mealplanner.repository.DayRepository
 import hu.bme.aut.android.mealplanner.repository.FoodRepository
+import hu.bme.aut.android.mealplanner.repository.MealPlanRepository
 import hu.bme.aut.android.mealplanner.repository.MealRepository
 import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
 import kotlinx.coroutines.flow.*
@@ -21,7 +24,8 @@ class DayViewModel @Inject constructor(
     private val dayRepository: DayRepository,
     private val mealTimeRepository: MealTimeRepository,
     private val foodRepository: FoodRepository,
-    private val mealRepository: MealRepository
+    private val mealRepository: MealRepository,
+    private val mealPlanRepository: MealPlanRepository
 ) : ViewModel() {
 
     private val _days = MutableStateFlow<List<Day>>(emptyList())
@@ -148,6 +152,15 @@ class DayViewModel @Inject constructor(
                 mealRepository.insertOrUpdateFromDomain(newMeal)
             }
 
+            val updatedDays = dayRepository.getAllWithFullMeals().map { it.toDomain() }
+
+            val updatedMealPlanDto = MealPlanDto(
+                days = updatedDays.map { it.toDto() },
+                mealTimes = _mealTimes.value.map { it.toDto() }
+            )
+
+            mealPlanRepository.updateMealPlan(updatedMealPlanDto)
+
             _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }
         }
     }
@@ -160,6 +173,8 @@ class DayViewModel @Inject constructor(
                 val clearedMeal = meal.copy(food = null)
                 mealRepository.insertOrUpdateFromDomain(clearedMeal)
             }
+
+            mealPlanRepository.resetDay(day.toDto())
 
             _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }
         }

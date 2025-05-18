@@ -1,5 +1,6 @@
 package hu.bme.aut.android.mealplanner.repository
 
+import android.util.Log
 import hu.bme.aut.android.mealplanner.data.dao.FoodDao
 import hu.bme.aut.android.mealplanner.data.dao.FoodIngredientCrossRefDao
 import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
@@ -32,13 +33,14 @@ class FoodRepository(
             for (dto in foodDtos) {
                 val foodId = dao.insert(dto.toEntity())
                 crossRefDao.deleteForFood(foodId)
-                val crossRefs = dto.ingredients.map {
+                val crossRefs = dto.ingredients?.map {
                     it.copy(foodId = foodId).toCrossRef()
-                }
+                } ?: emptyList()
                 crossRefDao.insertAll(crossRefs)
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.e("SyncCheck", "syncFoods failed", e)
         }
     }
 

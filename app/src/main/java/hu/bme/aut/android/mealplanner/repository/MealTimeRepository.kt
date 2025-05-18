@@ -1,5 +1,6 @@
 package hu.bme.aut.android.mealplanner.repository
 
+import android.util.Log
 import hu.bme.aut.android.mealplanner.data.dao.MealTimeDao
 import hu.bme.aut.android.mealplanner.data.entity.MealTimeEntity
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
@@ -26,7 +27,7 @@ class MealTimeRepository(
             dao.deleteAll()
             dao.insertAll(timeEntities)
         } catch (e: Exception) {
-            // TODO fallback to cached data
+            Log.e("SyncCheck", "syncMealTimes failed", e)
         }
     }
 

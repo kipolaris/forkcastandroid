@@ -25,7 +25,7 @@ fun FoodDto.toDomain(): Food = Food(
     id = id ?: 0,
     name = name,
     description = description,
-    ingredients = ingredients.map { it.toDomain() }
+    ingredients = ingredients?.map { it.toDomain() }
 )
 
 fun FoodEntity.toDomain(ingredients: List<FoodIngredient> = emptyList()): Food = Food(

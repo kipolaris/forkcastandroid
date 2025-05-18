@@ -28,10 +28,6 @@ class MainViewModel @Inject constructor(
         _isDarkTheme.value = !_isDarkTheme.value
     }
 
-    fun setTheme(isDark: Boolean) {
-        _isDarkTheme.value = isDark
-    }
-
     init {
         viewModelScope.launch {
             try {
