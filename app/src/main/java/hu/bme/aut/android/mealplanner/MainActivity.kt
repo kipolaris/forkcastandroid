@@ -20,13 +20,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: MainViewModel = hiltViewModel()
             val isLoading by viewModel.isLoading.collectAsState()
+            val isDarkTheme by viewModel.isDarkTheme.collectAsState()
 
             if (isLoading) {
                 SplashScreen()
             } else {
                 val navController = rememberNavController()
-                MealPlannerTheme {
-                    NavGraph(navController = navController)
+                MealPlannerTheme(darkTheme = isDarkTheme) {
+                    NavGraph(navController = navController, viewModel)
                 }
             }
         }

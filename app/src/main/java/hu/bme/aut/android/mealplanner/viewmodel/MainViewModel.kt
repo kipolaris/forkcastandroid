@@ -21,6 +21,17 @@ class MainViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme
+
+    fun toggleTheme() {
+        _isDarkTheme.value = !_isDarkTheme.value
+    }
+
+    fun setTheme(isDark: Boolean) {
+        _isDarkTheme.value = isDark
+    }
+
     init {
         viewModelScope.launch {
             try {

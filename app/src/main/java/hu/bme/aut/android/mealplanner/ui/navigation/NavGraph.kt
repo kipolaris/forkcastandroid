@@ -10,12 +10,13 @@ import hu.bme.aut.android.mealplanner.ui.screens.FoodScreen
 import hu.bme.aut.android.mealplanner.ui.screens.FoodsScreen
 import hu.bme.aut.android.mealplanner.ui.screens.IngredientsScreen
 import hu.bme.aut.android.mealplanner.ui.screens.MealTimesScreen
+import hu.bme.aut.android.mealplanner.viewmodel.MainViewModel
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
     NavHost(navController = navController, startDestination = "menu") {
         composable("menu") {
-            MenuScreen(navController)
+            MenuScreen(navController, viewModel)
         }
         composable("dayPage/{dayIndex}") { backStackEntry ->
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toIntOrNull() ?: 0

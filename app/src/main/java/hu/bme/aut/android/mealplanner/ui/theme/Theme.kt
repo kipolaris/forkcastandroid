@@ -41,8 +41,6 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color.White
 )
 
-
-
 val LobsterFont = FontFamily(Font(R.font.lobsterregular))
 
 val PatrickHandFont = FontFamily(Font(R.font.patrickhand))
