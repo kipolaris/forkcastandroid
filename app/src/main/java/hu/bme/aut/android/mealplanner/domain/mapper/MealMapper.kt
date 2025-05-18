@@ -46,4 +46,3 @@ fun MealWithFood.toDto(): MealDto = MealDto(
     mealTime = mealTime.toDto(),
     dayId = meal.dayId
 )
-

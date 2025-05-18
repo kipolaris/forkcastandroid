@@ -14,6 +14,8 @@ import hu.bme.aut.android.mealplanner.data.entity.MealEntity
 import hu.bme.aut.android.mealplanner.data.entity.MealTimeEntity
 
 import hu.bme.aut.android.mealplanner.data.dao.FoodIngredientCrossRefDao
+import hu.bme.aut.android.mealplanner.data.dao.UnitOfMeasureDao
+import hu.bme.aut.android.mealplanner.data.entity.UnitOfMeasureEntity
 import hu.bme.aut.android.mealplanner.data.relation.FoodIngredientCrossRef
 
 @Database(
@@ -23,9 +25,10 @@ import hu.bme.aut.android.mealplanner.data.relation.FoodIngredientCrossRef
         IngredientEntity::class,
         MealEntity::class,
         MealTimeEntity::class,
-        FoodIngredientCrossRef::class
+        FoodIngredientCrossRef::class,
+        UnitOfMeasureEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class MealPlannerDatabase : RoomDatabase() {
@@ -36,6 +39,7 @@ abstract class MealPlannerDatabase : RoomDatabase() {
     abstract fun mealDao(): MealDao
     abstract fun mealTimeDao(): MealTimeDao
     abstract fun foodIngredientCrossRefDao(): FoodIngredientCrossRefDao
+    abstract fun unitOfMeasureDao(): UnitOfMeasureDao
 }
 
 

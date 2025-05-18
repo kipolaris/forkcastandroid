@@ -2,16 +2,22 @@ package hu.bme.aut.android.mealplanner.repository
 
 import hu.bme.aut.android.mealplanner.data.dao.FoodDao
 import hu.bme.aut.android.mealplanner.data.dao.FoodIngredientCrossRefDao
+import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
+import hu.bme.aut.android.mealplanner.data.dao.UnitOfMeasureDao
 import hu.bme.aut.android.mealplanner.data.entity.FoodEntity
 import hu.bme.aut.android.mealplanner.data.relation.FoodIngredientCrossRef
-import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
+import hu.bme.aut.android.mealplanner.data.relation.FoodWithIngredientsRaw
+import hu.bme.aut.android.mealplanner.data.relation.IngredientWithAmount
+import hu.bme.aut.android.mealplanner.domain.mapper.*
 import hu.bme.aut.android.mealplanner.domain.model.Food
-import hu.bme.aut.android.mealplanner.domain.model.Ingredient
+import hu.bme.aut.android.mealplanner.domain.model.FoodIngredient
 import hu.bme.aut.android.mealplanner.network.api.FoodApi
 
 class FoodRepository(
     private val api: FoodApi,
     private val dao: FoodDao,
+    private val ingredientDao: IngredientDao,
+    private val unitOfMeasureDao: UnitOfMeasureDao,
     private val crossRefDao: FoodIngredientCrossRefDao
 ) {
     suspend fun getAll(): List<FoodEntity> = dao.getAll()
@@ -23,71 +29,111 @@ class FoodRepository(
     suspend fun syncFoods() {
         try {
             val foodDtos = api.getAllFoods()
-            val foodEntities = foodDtos.map { it.toEntity() }
-            val crossRefs = foodDtos.flatMap { food ->
-                food.ingredients.map { ingredient ->
-                    FoodIngredientCrossRef(
-                        foodId = food.id ?: 0,
-                        ingredientId = ingredient.id
-                    )
+            for (dto in foodDtos) {
+                val foodId = dao.insert(dto.toEntity())
+                crossRefDao.deleteForFood(foodId)
+                val crossRefs = dto.ingredients.map {
+                    it.copy(foodId = foodId).toCrossRef()
                 }
+                crossRefDao.insertAll(crossRefs)
             }
-
-            dao.deleteAll()
-            crossRefDao.deleteAll()
-            dao.insertAll(foodEntities)
-            crossRefDao.insertAll(crossRefs)
-
         } catch (e: Exception) {
-            // TODO fallback logic
+            e.printStackTrace()
         }
     }
 
     suspend fun insert(food: Food): Food {
-        val foodEntity = food.toEntity()
-        val newId = dao.insert(foodEntity)
-        return food.copy(id = newId)
-    }
-
-    suspend fun delete(food: Food) {
-        dao.delete(food.toEntity())
-    }
-
-    suspend fun update(food: Food) {
-        val foodEntity = food.toEntity()
-        dao.update(foodEntity)
-
-        val crossRefs = food.ingredients.orEmpty().map {
-            FoodIngredientCrossRef(
-                foodId = food.id,
-                ingredientId = it.id,
-                quantity = it.quantity
-            )
+        val response = try {
+            api.addFood(food.toDto())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
 
-        crossRefDao.deleteForFood(food.id)
-        crossRefDao.insertAll(crossRefs)
+        val savedFood = if (response?.isSuccessful == true) {
+            response.body()?.toDomain()
+        } else {
+            food.copy(id = dao.insert(food.toEntity()))
+        }
+
+        val localId = dao.insert(savedFood!!.toEntity())
+        val crossRefs = savedFood.ingredients?.map {
+            FoodIngredientCrossRef(
+                foodId = localId,
+                ingredientId = it.ingredient.id,
+                amount = it.amount,
+                unitId = it.unit.id
+            )
+        }
+        if (crossRefs != null) {
+            crossRefDao.insertAll(crossRefs)
+        }
+        return savedFood.copy(id = localId)
     }
 
-    suspend fun getByIdWithIngredients(foodId: Long): Food {
-        val rawItems = dao.getFoodWithIngredientsRaw(foodId)
-        val first = rawItems.firstOrNull()
-            ?: throw IllegalArgumentException("Food not found")
 
-        val food = Food(
-            id = first.foodId,
-            name = first.foodName,
-            description = first.foodDescription,
-            ingredients = rawItems.mapNotNull {
-                if (it.ingredientId != null && it.ingredientName != null) {
-                    Ingredient(
-                        id = it.ingredientId,
-                        name = it.ingredientName,
-                        quantity = it.quantityInCrossRef
-                    )
-                } else null
-            }
-        )
-        return food
+    suspend fun delete(food: Food) {
+        try {
+            api.deleteFood(food.id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        dao.delete(food.toEntity())
+        crossRefDao.deleteForFood(food.id)
+    }
+
+
+    suspend fun update(food: Food) {
+        try {
+            api.updateFood(food.id, food.toDto())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        dao.update(food.toEntity())
+        crossRefDao.deleteForFood(food.id)
+        val crossRefs = food.ingredients?.map {
+            FoodIngredientCrossRef(
+                foodId = food.id,
+                ingredientId = it.ingredient.id,
+                amount = it.amount,
+                unitId = it.unit.id
+            )
+        }
+        if (crossRefs != null) {
+            crossRefDao.insertAll(crossRefs)
+        }
+    }
+
+
+    suspend fun getByIdWithIngredients(foodId: Long): Food {
+        val foodEntity = dao.getById(foodId)
+        val crossRefs = crossRefDao.getByFoodId(foodId)
+
+        val ingredientIds = crossRefs.map { it.ingredientId }
+        val unitIds = crossRefs.map { it.unitId }
+
+        val ingredients = ingredientDao.getByIds(ingredientIds).associateBy { it.id }
+        val units = unitOfMeasureDao.getByIds(unitIds).associateBy { it.id }
+
+        val foodIngredients = crossRefs.mapNotNull { ref ->
+            val ingredient = ingredients[ref.ingredientId]?.toDomain()
+            val unit = units[ref.unitId]?.toDomain()
+
+            if (ingredient != null && unit != null) {
+                FoodIngredient(ingredient = ingredient, amount = ref.amount, unit = unit)
+            } else null
+        }
+
+        return foodEntity.toDomain(ingredients = foodIngredients)
+    }
+
+    suspend fun getIngredientsWithAmount(foodId: Long): List<IngredientWithAmount> {
+        return crossRefDao.getIngredientsWithAmount(foodId)
+    }
+
+    suspend fun getFood(foodId: Long): FoodWithIngredientsRaw {
+        return dao.getFoodWithIngredients(foodId)
     }
 }

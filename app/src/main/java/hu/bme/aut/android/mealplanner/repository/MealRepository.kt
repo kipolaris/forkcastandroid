@@ -2,12 +2,12 @@ package hu.bme.aut.android.mealplanner.repository
 
 import hu.bme.aut.android.mealplanner.data.dao.DayDao
 import hu.bme.aut.android.mealplanner.data.dao.MealDao
-import hu.bme.aut.android.mealplanner.data.relation.DayWithFullMeals
 import hu.bme.aut.android.mealplanner.data.entity.MealEntity
+import hu.bme.aut.android.mealplanner.data.relation.DayWithFullMeals
 import hu.bme.aut.android.mealplanner.data.relation.MealWithFood
-import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
+import hu.bme.aut.android.mealplanner.domain.mapper.*
+import hu.bme.aut.android.mealplanner.domain.model.Meal
 import hu.bme.aut.android.mealplanner.network.api.MealApi
-import hu.bme.aut.android.mealplanner.network.dto.MealDto
 
 class MealRepository(
     private val api: MealApi,
@@ -22,31 +22,8 @@ class MealRepository(
             mealDao.insertAll(remote)
             remote
         } catch (e: Exception) {
+            e.printStackTrace()
             mealDao.getAll() // fallback
-        }
-    }
-
-    suspend fun addMeal(meal: MealDto): Boolean {
-        return try {
-            api.addMeal(meal).isSuccessful
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    suspend fun updateMeal(meal: MealDto): Boolean {
-        return try {
-            api.updateMeal(meal.id ?: return false, meal).isSuccessful
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    suspend fun deleteMeal(id: Long): Boolean {
-        return try {
-            api.deleteMeal(id).isSuccessful
-        } catch (e: Exception) {
-            false
         }
     }
 
@@ -60,8 +37,43 @@ class MealRepository(
         return DayWithFullMeals(day, meals)
     }
 
-    suspend fun insertOrUpdate(meal: MealEntity) {
-        mealDao.insert(meal)
+    suspend fun insertOrUpdate(mealWithFood: MealWithFood) {
+        val meal = mealWithFood.meal
+        val dto = mealWithFood.toDto()
+
+        try {
+            if (meal.id == 0L) {
+                val response = api.addMeal(dto)
+                if (response.isSuccessful) {
+                    val saved = response.body()!!.toEntity()
+                    mealDao.insert(saved)
+                } else {
+                    mealDao.insert(meal)
+                }
+            } else {
+                val response = api.updateMeal(meal.id, dto)
+                if (response.isSuccessful) {
+                    mealDao.insert(meal)
+                } else {
+                    mealDao.insert(meal)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mealDao.insert(meal)
+        }
+    }
+
+    suspend fun insertOrUpdateFromDomain(meal: Meal) {
+        val foodEntity = meal.food?.toEntity()
+        val mealTimeEntity = meal.mealTime.toEntity()
+
+        val mealWithFood = MealWithFood(
+            meal = meal.toEntity(),
+            food = foodEntity,
+            mealTime = mealTimeEntity
+        )
+
+        insertOrUpdate(mealWithFood)
     }
 }
-

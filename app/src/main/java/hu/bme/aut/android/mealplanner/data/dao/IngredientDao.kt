@@ -25,10 +25,12 @@ interface IngredientDao {
     @Update
     suspend fun updateIngredient(ingredient: IngredientEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(ingredient: IngredientEntity): Long
 
     @Delete
     suspend fun delete(ingredient: IngredientEntity)
-}
 
+    @Query("SELECT * FROM ingredients WHERE id IN (:ids)")
+    suspend fun getByIds(ids: List<Long>): List<IngredientEntity>
+}

@@ -27,7 +27,7 @@ class IngredientsViewModel @Inject constructor(
 
     fun addIngredient(name: String) {
         viewModelScope.launch {
-            val newIngredient = Ingredient(id = 0, name = name, quantity = null)
+            val newIngredient = Ingredient(id = 0, name = name)
             ingredientRepository.insert(newIngredient)
             _ingredients.value = ingredientRepository.getAll().map { it.toDomain() }
         }

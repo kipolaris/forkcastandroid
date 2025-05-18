@@ -11,13 +11,13 @@ interface MealTimeApi {
     suspend fun getAll(): List<MealTimeDto>
 
     @POST("/api/mealtimes")
-    suspend fun addMealTime(@Body mealTime: MealTimeDto): Response<Unit>
+    suspend fun addMealTime(@Body mealTime: MealTimeDto): Response<MealTimeDto>
 
     @PUT("/api/mealtimes/{id}")
     suspend fun updateMealTime(
         @Path("id") id: Long,
         @Body mealTime: MealTimeDto
-    ): Response<Unit>
+    ): Response<MealTimeDto>
 
     @DELETE("/api/mealtimes/{id}")
     suspend fun deleteMealTime(@Path("id") id: Long): Response<Unit>

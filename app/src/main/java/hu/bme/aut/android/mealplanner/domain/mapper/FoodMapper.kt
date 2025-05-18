@@ -1,10 +1,12 @@
 package hu.bme.aut.android.mealplanner.domain.mapper
 
 import hu.bme.aut.android.mealplanner.data.entity.FoodEntity
+import hu.bme.aut.android.mealplanner.data.relation.FoodWithIngredientsRaw
+import hu.bme.aut.android.mealplanner.data.relation.IngredientWithAmount
 import hu.bme.aut.android.mealplanner.domain.model.Food
-import hu.bme.aut.android.mealplanner.domain.model.Ingredient
+import hu.bme.aut.android.mealplanner.domain.model.FoodIngredient
 import hu.bme.aut.android.mealplanner.network.dto.FoodDto
-import hu.bme.aut.android.mealplanner.network.dto.IngredientDto
+import hu.bme.aut.android.mealplanner.network.dto.FoodIngredientDto
 
 fun FoodDto.toEntity(): FoodEntity = FoodEntity(
     id = this.id ?: 0,
@@ -12,7 +14,7 @@ fun FoodDto.toEntity(): FoodEntity = FoodEntity(
     description = this.description
 )
 
-fun FoodEntity.toDto(ingredients: List<IngredientDto> = emptyList()): FoodDto = FoodDto(
+fun FoodEntity.toDto(ingredients: List<FoodIngredientDto> = emptyList()): FoodDto = FoodDto(
     id = this.id,
     name = this.name,
     description = this.description,
@@ -26,7 +28,7 @@ fun FoodDto.toDomain(): Food = Food(
     ingredients = ingredients.map { it.toDomain() }
 )
 
-fun FoodEntity.toDomain(ingredients: List<Ingredient> = emptyList()): Food = Food(
+fun FoodEntity.toDomain(ingredients: List<FoodIngredient> = emptyList()): Food = Food(
     id = id,
     name = name,
     description = description,
@@ -45,3 +47,17 @@ fun Food.toDto(): FoodDto = FoodDto(
     description = description,
     ingredients = ingredients!!.map { it.toDto() }
 )
+
+fun FoodWithIngredientsRaw.toDomain(ingredientsWithAmount: List<IngredientWithAmount>): Food = Food(
+    id = food.id,
+    name = food.name,
+    description = food.description,
+    ingredients = ingredientsWithAmount.map {
+        FoodIngredient(
+            ingredient = it.ingredient.toDomain(),
+            amount = it.amount,
+            unit = it.unit.toDomain()
+        )
+    }
+)
+

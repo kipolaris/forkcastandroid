@@ -10,13 +10,13 @@ interface IngredientApi {
     suspend fun getAllIngredients(): List<IngredientDto>
 
     @POST("/api/ingredients")
-    suspend fun addIngredient(@Body ingredient: IngredientDto): Response<Unit>
+    suspend fun addIngredient(@Body ingredient: IngredientDto): Response<IngredientDto>
 
     @PUT("/api/ingredients/{id}")
     suspend fun updateIngredient(
         @Path("id") id: Long,
         @Body ingredient: IngredientDto
-    ): Response<Unit>
+    ): Response<IngredientDto>
 
     @DELETE("/api/ingredients/{id}")
     suspend fun deleteIngredient(@Path("id") id: Long): Response<Unit>

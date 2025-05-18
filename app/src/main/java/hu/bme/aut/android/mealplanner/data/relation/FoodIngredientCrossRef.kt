@@ -14,5 +14,6 @@ import androidx.room.Index
 data class FoodIngredientCrossRef(
     val foodId: Long,
     val ingredientId: Long,
-    val quantity: String? = null
+    val amount: Double,
+    val unitId: Long
 )

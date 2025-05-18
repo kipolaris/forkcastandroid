@@ -3,6 +3,7 @@ package hu.bme.aut.android.mealplanner.repository
 import hu.bme.aut.android.mealplanner.data.dao.IngredientDao
 import hu.bme.aut.android.mealplanner.data.entity.IngredientEntity
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
+import hu.bme.aut.android.mealplanner.domain.mapper.toDto
 import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
 import hu.bme.aut.android.mealplanner.domain.model.Ingredient
 import hu.bme.aut.android.mealplanner.network.api.IngredientApi
@@ -34,14 +35,41 @@ class IngredientRepository(
     }
 
     suspend fun update(ingredient: Ingredient) {
+        try {
+            api.updateIngredient(ingredient.id, ingredient.toDto())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         dao.updateIngredient(ingredient.toEntity())
     }
 
-    suspend fun insert(ingredient: Ingredient): Long {
-        return dao.insert(IngredientEntity(id = 0L, name = ingredient.name))
+    suspend fun insert(ingredient: Ingredient): Ingredient {
+        val response = try {
+            api.addIngredient(ingredient.toDto())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+
+        val savedIngredient = if (response?.isSuccessful == true) {
+            response.body()?.toDomain()
+        } else {
+            ingredient.copy(id=dao.insert(ingredient.toEntity()))
+        }
+
+        val localId = dao.insert(savedIngredient!!.toEntity())
+
+        return savedIngredient.copy(id = localId)
     }
 
     suspend fun delete(ingredient: Ingredient) {
+        try {
+            api.deleteIngredient(ingredient.id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         dao.delete(ingredient.toEntity())
     }
 }

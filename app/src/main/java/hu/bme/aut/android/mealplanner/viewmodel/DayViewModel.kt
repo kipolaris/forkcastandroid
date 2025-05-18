@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.android.mealplanner.domain.mapper.toDomain
-import hu.bme.aut.android.mealplanner.domain.mapper.toEntity
 import hu.bme.aut.android.mealplanner.domain.model.Day
 import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.domain.model.Meal
@@ -138,7 +137,7 @@ class DayViewModel @Inject constructor(
 
             if (existingMeal != null) {
                 val updatedMeal = existingMeal.copy(food = food)
-                mealRepository.insertOrUpdate(updatedMeal.toEntity())
+                mealRepository.insertOrUpdateFromDomain(updatedMeal)
             } else {
                 val newMeal = Meal(
                     id = 0,
@@ -146,7 +145,7 @@ class DayViewModel @Inject constructor(
                     food = food,
                     mealTime = _mealTimes.value.first { it.id == mealTimeId }
                 )
-                mealRepository.insertOrUpdate(newMeal.toEntity())
+                mealRepository.insertOrUpdateFromDomain(newMeal)
             }
 
             _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }
@@ -159,7 +158,7 @@ class DayViewModel @Inject constructor(
 
             day.meals.forEach { meal ->
                 val clearedMeal = meal.copy(food = null)
-                mealRepository.insertOrUpdate(clearedMeal.toEntity())
+                mealRepository.insertOrUpdateFromDomain(clearedMeal)
             }
 
             _days.value = dayRepository.getAllWithFullMeals().map { it.toDomain() }

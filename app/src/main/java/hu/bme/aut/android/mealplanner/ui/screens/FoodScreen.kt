@@ -48,9 +48,13 @@ import hu.bme.aut.android.mealplanner.ui.theme.LobsterFont
 import hu.bme.aut.android.mealplanner.ui.theme.PatrickHandFont
 import hu.bme.aut.android.mealplanner.viewmodel.FoodViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import hu.bme.aut.android.mealplanner.ui.components.SelectOrCreateItemDialog
+import hu.bme.aut.android.mealplanner.domain.model.FoodIngredient
+import hu.bme.aut.android.mealplanner.domain.model.UnitOfMeasure
+import hu.bme.aut.android.mealplanner.ui.components.AddIngredientDialog
+import hu.bme.aut.android.mealplanner.ui.components.EditQuantityDialog
 
 
 @Composable
@@ -60,12 +64,12 @@ fun FoodScreen(
     val viewModel: FoodViewModel = hiltViewModel()
     val food by viewModel.food.collectAsState()
     val ingredients by viewModel.ingredients.collectAsState()
+    val units by viewModel.units.collectAsState()
 
     if (food == null) return
 
     var editingDescription by remember { mutableStateOf(false) }
-    var editingIngredient by remember { mutableStateOf<Ingredient?>(null) }
-    val editingQuantity by remember { mutableStateOf("") }
+    var editingIngredient by remember { mutableStateOf<FoodIngredient?>(null) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showQuantityDialog by remember { mutableStateOf(false) }
 
@@ -140,7 +144,7 @@ fun FoodScreen(
                         modifier = Modifier
                             .heightIn(max = 200.dp)
                     ) {
-                        items(food!!.ingredients.orEmpty().sortedBy { it.name.lowercase() }) { ingredient ->
+                        items(food!!.ingredients.orEmpty().sortedBy { it.ingredient.name.lowercase() }) { ingredient ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -153,7 +157,7 @@ fun FoodScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    ingredient.name,
+                                    ingredient.ingredient.name,
                                     fontFamily = PatrickHandFont,
                                     fontSize = 18.sp,
                                     color = MaterialTheme.colorScheme.onBackground,
@@ -162,7 +166,7 @@ fun FoodScreen(
 
                                 )
                                 Text(
-                                    ingredient.quantity.orEmpty(),
+                                    "${ingredient.amount} ${ingredient.unit.abbreviation}",
                                     fontFamily = PatrickHandFont,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     fontSize = 16.sp,
@@ -170,7 +174,7 @@ fun FoodScreen(
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
                                 IconButton(onClick = {
-                                    viewModel.removeIngredient(ingredient.id)
+                                    viewModel.removeIngredient(ingredient.ingredient.id)
                                 }) {
                                     Image(painter = painterResource(id = R.drawable.trashcan), contentDescription = "Delete")
                                 }
@@ -227,12 +231,12 @@ fun FoodScreen(
 
     // Quantity edit dialog
     editingIngredient?.let { ingredient ->
-        EditNameDialog(
-            title = "Edit quantity",
-            label = "Enter quantity",
-            initialName = editingQuantity,
-            onConfirm = { newQty ->
-                viewModel.updateIngredientQuantity(ingredient.id, newQty)
+        EditQuantityDialog(
+            initialAmount = ingredient.amount,
+            initialUnit = ingredient.unit,
+            units = units,
+            onConfirm = { newAmount, unitId ->
+                viewModel.updateIngredientQuantity(ingredient.ingredient.id, newAmount, unitId)
                 editingIngredient = null
             },
             onDismiss = { editingIngredient = null }
@@ -240,18 +244,16 @@ fun FoodScreen(
     }
 
     if (showAddDialog) {
-        SelectOrCreateItemDialog(
-            label = "Ingredient",
-            items = ingredients,
-            getItemName = { it.name },
+        AddIngredientDialog(
+            savedIngredients = ingredients,
+            units = units,
             onDismiss = { showAddDialog = false },
-            onItemSelected = { selectedIngredient ->
-                editingIngredient = selectedIngredient
-                showQuantityDialog = true
-                showAddDialog = false
-            },
-            onAddNewItem = { name, quantity, _ ->
-                viewModel.addNewIngredientAndAssign(name, quantity)
+            onSave = { selectedIngredient, newIngredientName, amount, unit ->
+                if (selectedIngredient != null) {
+                    viewModel.addIngredient(selectedIngredient, amount, unit)
+                } else {
+                    viewModel.addNewIngredientAndAssign(newIngredientName, amount, unit)
+                }
                 showAddDialog = false
             }
         )
@@ -271,12 +273,12 @@ fun FoodScreen(
     }
 
     if (showQuantityDialog && editingIngredient != null) {
-        EditNameDialog(
-            title = "Enter quantity",
-            label = "Quantity",
-            initialName = "",
-            onConfirm = { qty ->
-                viewModel.addIngredient(editingIngredient!!, qty)
+        EditQuantityDialog(
+            initialAmount = editingIngredient!!.amount,
+            initialUnit = editingIngredient!!.unit,
+            units = units,
+            onConfirm = { amount, unit ->
+                viewModel.addIngredient(editingIngredient!!.ingredient, amount, unit)
                 showQuantityDialog = false
                 editingIngredient = null
             },
@@ -286,5 +288,4 @@ fun FoodScreen(
             }
         )
     }
-
 }

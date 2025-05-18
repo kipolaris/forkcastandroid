@@ -23,6 +23,7 @@ import hu.bme.aut.android.mealplanner.repository.IngredientRepository
 import hu.bme.aut.android.mealplanner.repository.MealPlanRepository
 import hu.bme.aut.android.mealplanner.repository.MealRepository
 import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
+import hu.bme.aut.android.mealplanner.repository.UnitOfMeasureRepository
 import hu.bme.aut.android.mealplanner.util.Constants.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,6 +50,7 @@ object AppModule {
     @Provides fun provideMealDao(db: MealPlannerDatabase): MealDao = db.mealDao()
     @Provides fun provideMealTimeDao(db: MealPlannerDatabase): MealTimeDao = db.mealTimeDao()
     @Provides fun provideFoodIngredientCrossRefDao(db: MealPlannerDatabase): FoodIngredientCrossRefDao = db.foodIngredientCrossRefDao()
+    @Provides fun provideUnitOfMeasureDao(db: MealPlannerDatabase) = db.unitOfMeasureDao()
 
 
     //Retrofit
@@ -106,8 +108,10 @@ object AppModule {
     fun provideFoodRepository(
         api: FoodApi,
         foodDao: FoodDao,
+        ingredientDao: IngredientDao,
+        unitOfMeasureDao: UnitOfMeasureDao,
         crossRefDao: FoodIngredientCrossRefDao
-    ): FoodRepository = FoodRepository(api, foodDao, crossRefDao)
+    ): FoodRepository = FoodRepository(api, foodDao, ingredientDao, unitOfMeasureDao, crossRefDao)
 
     @Provides
     @Singleton
@@ -121,10 +125,9 @@ object AppModule {
     fun provideDayRepository(
         api: DayApi,
         dayDao: DayDao,
-        mealDao: MealDao,
         foodDao: FoodDao,
         mealTimeDao: MealTimeDao
-    ): DayRepository = DayRepository(api, dayDao, mealDao, foodDao, mealTimeDao)
+    ): DayRepository = DayRepository(api, dayDao, foodDao, mealTimeDao)
 
     @Provides
     @Singleton
@@ -141,4 +144,9 @@ object AppModule {
         dayDao: DayDao
     ): MealRepository = MealRepository(api, mealDao, dayDao)
 
+    @Provides
+    @Singleton
+    fun provideUnitOfMeasureRepository(
+        dao: UnitOfMeasureDao
+    ): UnitOfMeasureRepository = UnitOfMeasureRepository(dao)
 }

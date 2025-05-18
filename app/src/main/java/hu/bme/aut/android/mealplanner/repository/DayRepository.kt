@@ -2,7 +2,6 @@ package hu.bme.aut.android.mealplanner.repository
 
 import hu.bme.aut.android.mealplanner.data.dao.DayDao
 import hu.bme.aut.android.mealplanner.data.dao.FoodDao
-import hu.bme.aut.android.mealplanner.data.dao.MealDao
 import hu.bme.aut.android.mealplanner.data.dao.MealTimeDao
 import hu.bme.aut.android.mealplanner.data.entity.DayEntity
 import hu.bme.aut.android.mealplanner.data.relation.DayWithFullMeals
@@ -13,7 +12,6 @@ import hu.bme.aut.android.mealplanner.network.api.DayApi
 class DayRepository(
     private val api: DayApi,
     private val dao: DayDao,
-    private val mealDao: MealDao,
     private val foodDao: FoodDao,
     private val mealTimeDao: MealTimeDao
 ) {
@@ -50,7 +48,7 @@ class DayRepository(
     }
 
     suspend fun getAllWithFullMeals(): List<DayWithFullMeals> {
-        val daysWithMeals = dao.getAllWithMeals() // returns List<DayWithMeals>
+        val daysWithMeals = dao.getAllWithMeals()
         val result = mutableListOf<DayWithFullMeals>()
 
         for (dayWithMeals in daysWithMeals) {

@@ -10,13 +10,13 @@ interface MealApi {
     suspend fun getAllMeals(): List<MealDto>
 
     @POST("/api/meals")
-    suspend fun addMeal(@Body meal: MealDto): Response<Unit>
+    suspend fun addMeal(@Body meal: MealDto): Response<MealDto>
 
     @PUT("/api/meals/{id}")
     suspend fun updateMeal(
         @Path("id") id: Long,
         @Body meal: MealDto
-    ): Response<Unit>
+    ): Response<MealDto>
 
     @DELETE("/api/meals/{id}")
     suspend fun deleteMeal(@Path("id") id: Long): Response<Unit>
