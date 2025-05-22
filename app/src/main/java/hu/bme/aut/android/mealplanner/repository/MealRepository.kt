@@ -23,7 +23,7 @@ class MealRepository(
             remote
         } catch (e: Exception) {
             e.printStackTrace()
-            mealDao.getAll() // fallback
+            mealDao.getAll()
         }
     }
 

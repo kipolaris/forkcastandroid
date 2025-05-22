@@ -26,7 +26,7 @@ fun MenuScreen(navController: NavController, viewModel: MainViewModel) {
         ) {
             Spacer(modifier = Modifier.height(32.dp))
 
-            PageHeader(title = "Meal Planner")
+            PageHeader(title = "Forkcast")
 
             Spacer(modifier = Modifier.height(48.dp))
 

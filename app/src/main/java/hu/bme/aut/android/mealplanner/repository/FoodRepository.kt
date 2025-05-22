@@ -13,6 +13,7 @@ import hu.bme.aut.android.mealplanner.domain.mapper.*
 import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.domain.model.FoodIngredient
 import hu.bme.aut.android.mealplanner.network.api.FoodApi
+import hu.bme.aut.android.mealplanner.network.dto.FoodIngredientRequestDto
 
 class FoodRepository(
     private val api: FoodApi,
@@ -93,6 +94,8 @@ class FoodRepository(
             e.printStackTrace()
         }
 
+        println("Updated food: $food")
+
         dao.update(food.toEntity())
         crossRefDao.deleteForFood(food.id)
         val crossRefs = food.ingredients?.map {
@@ -124,7 +127,7 @@ class FoodRepository(
             val unit = units[ref.unitId]?.toDomain()
 
             if (ingredient != null && unit != null) {
-                FoodIngredient(ingredient = ingredient, amount = ref.amount, unit = unit)
+                FoodIngredient(id = null, ingredient = ingredient, amount = ref.amount, unit = unit)
             } else null
         }
 
@@ -137,5 +140,29 @@ class FoodRepository(
 
     suspend fun getFood(foodId: Long): FoodWithIngredientsRaw {
         return dao.getFoodWithIngredients(foodId)
+    }
+
+    suspend fun addIngredientToFood(foodId: Long, foodIngredient: FoodIngredientRequestDto) {
+        try {
+            api.addIngredientToFood(foodId, foodIngredient)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun updateIngredientInFood(foodId: Long, foodIngredient: FoodIngredientRequestDto) {
+        try {
+            api.updateIngredientInFood(foodId, foodIngredient)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun deleteIngredientFromFood(foodId: Long, foodIngredient: FoodIngredientRequestDto) {
+        try {
+            api.deleteIngredientFromFood(foodId, foodIngredient)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

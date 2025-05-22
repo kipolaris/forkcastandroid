@@ -27,7 +27,7 @@ fun DayDto.toDomain() = Day(
 fun DayWithFullMeals.toDomain(): Day = Day(
     id = day.id,
     name = day.name,
-    meals = meals?.map { it.toDomain() } ?: emptyList()
+    meals = meals.map { it.toDomain() }
 )
 
 fun DayEntity.toDomain(meals: List<Meal>): Day = Day(

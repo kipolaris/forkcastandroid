@@ -38,7 +38,7 @@ class MealPlanRepository(
             val ingredientIdsFromFoods = plan.days
                 .flatMap { it.meals }
                 .flatMap { it.food?.ingredients ?: emptyList() }
-                .map { it.ingredientId }
+                .map { it.ingredient.id }
 
             val ingredientsFromFoods = ingredientDao.getByIds(ingredientIdsFromFoods)
             val allIngredients = (globalIngredients + ingredientsFromFoods).distinctBy { it.id }

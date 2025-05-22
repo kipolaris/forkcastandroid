@@ -42,10 +42,10 @@ fun Food.toEntity(): FoodEntity = FoodEntity(
 )
 
 fun Food.toDto(): FoodDto = FoodDto(
-    id = id,
-    name = name,
-    description = description,
-    ingredients = ingredients!!.map { it.toDto() }
+    id = this.id,
+    name = this.name,
+    description = this.description,
+    ingredients = this.ingredients!!.map { it.toDto() }
 )
 
 fun FoodWithIngredientsRaw.toDomain(ingredientsWithAmount: List<IngredientWithAmount>): Food = Food(
@@ -54,6 +54,7 @@ fun FoodWithIngredientsRaw.toDomain(ingredientsWithAmount: List<IngredientWithAm
     description = food.description,
     ingredients = ingredientsWithAmount.map {
         FoodIngredient(
+            id = null,
             ingredient = it.ingredient.toDomain(),
             amount = it.amount,
             unit = it.unit.toDomain()

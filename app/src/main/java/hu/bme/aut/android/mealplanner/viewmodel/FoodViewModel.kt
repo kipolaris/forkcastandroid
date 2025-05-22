@@ -9,6 +9,7 @@ import hu.bme.aut.android.mealplanner.domain.model.Food
 import hu.bme.aut.android.mealplanner.domain.model.FoodIngredient
 import hu.bme.aut.android.mealplanner.domain.model.Ingredient
 import hu.bme.aut.android.mealplanner.domain.model.UnitOfMeasure
+import hu.bme.aut.android.mealplanner.network.dto.FoodIngredientRequestDto
 import hu.bme.aut.android.mealplanner.repository.FoodRepository
 import hu.bme.aut.android.mealplanner.repository.IngredientRepository
 import hu.bme.aut.android.mealplanner.repository.UnitOfMeasureRepository
@@ -51,6 +52,17 @@ class FoodViewModel @Inject constructor(
 
     fun updateIngredientQuantity(ingredientId: Long, newAmount: Double, unit: UnitOfMeasure) {
         viewModelScope.launch {
+            val foodIngredient = _food.value?.ingredients?.find { it.ingredient.id == ingredientId }
+
+            val request = FoodIngredientRequestDto(
+                id = foodIngredient?.id ?: return@launch,
+                ingredientId = ingredientId,
+                amount = newAmount,
+                unitId = unit.id
+            )
+
+            foodRepository.updateIngredientInFood(foodId, request)
+
             _food.value = _food.value?.copy(
                 ingredients = _food.value?.ingredients?.map {
                     if (it.ingredient.id == ingredientId) it.copy(amount = newAmount, unit = unit) else it
@@ -62,6 +74,21 @@ class FoodViewModel @Inject constructor(
 
     fun removeIngredient(ingredientId: Long) {
         viewModelScope.launch {
+            val foodIngredient = _food.value?.ingredients?.find { it.ingredient.id == ingredientId }
+
+            val request = foodIngredient?.id?.let {
+                FoodIngredientRequestDto(
+                    id = it,
+                    ingredientId = ingredientId,
+                    amount = foodIngredient.amount,
+                    unitId = foodIngredient.unit.id
+                )
+            }
+
+            if (request != null) {
+                foodRepository.deleteIngredientFromFood(foodId, request)
+            }
+
             _food.value = _food.value?.copy(
                 ingredients = _food.value?.ingredients?.filterNot { it.ingredient.id == ingredientId }
             )
@@ -71,8 +98,18 @@ class FoodViewModel @Inject constructor(
 
     fun addIngredient(ingredient: Ingredient, amount: Double, unit: UnitOfMeasure) {
         viewModelScope.launch {
+            val request = FoodIngredientRequestDto(
+                id = 0,
+                ingredientId = ingredient.id,
+                amount = amount,
+                unitId = unit.id
+            )
+
+            foodRepository.addIngredientToFood(foodId, request)
+
             val updatedList = _food.value!!.ingredients?.toMutableList()
-            updatedList?.add(FoodIngredient(ingredient = ingredient, amount = amount, unit = unit))
+            updatedList?.add(FoodIngredient(id = null, ingredient = ingredient, amount = amount, unit = unit))
+
             _food.value = _food.value?.copy(ingredients = updatedList)
             _food.value?.let { foodRepository.update(it) }
         }
@@ -92,7 +129,8 @@ class FoodViewModel @Inject constructor(
 
     fun updateFoodDescription(newDesc: String) {
         viewModelScope.launch {
-            _food.value = _food.value?.copy(description = newDesc)
+            val newFood = _food.value?.copy(description = newDesc)
+            _food.value = newFood
             _food.value?.let { foodRepository.update(it) }
         }
     }

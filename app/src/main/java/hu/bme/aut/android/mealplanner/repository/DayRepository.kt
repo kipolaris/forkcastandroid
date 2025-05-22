@@ -28,7 +28,7 @@ class DayRepository(
             dao.deleteAll()
             dao.insertAll(dayEntities)
         } catch (e: Exception) {
-            // TODO fallback to cache data
+            e.printStackTrace()
         }
     }
 

@@ -5,7 +5,7 @@ import hu.bme.aut.android.mealplanner.domain.model.MealTime
 import hu.bme.aut.android.mealplanner.network.dto.MealTimeDto
 
 fun MealTimeDto.toEntity(): MealTimeEntity = MealTimeEntity(
-    id = this.id ?: 0,
+    id = this.id,
     name = this.name,
     order = this.order
 )

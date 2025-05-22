@@ -34,6 +34,5 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable("food/{foodId}") {
             FoodScreen(navController)
         }
-
     }
 }

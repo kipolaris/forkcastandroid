@@ -74,20 +74,22 @@ fun UnitOfMeasureEntity.toDomain(): UnitOfMeasure = UnitOfMeasure(
 
 fun FoodIngredientDto.toCrossRef(): FoodIngredientCrossRef = FoodIngredientCrossRef(
     foodId = foodId,
-    ingredientId = ingredientId,
+    ingredientId = ingredient.id,
     amount = amount,
     unitId = unit.id
 )
 
 fun FoodIngredientDto.toDomain(): FoodIngredient = FoodIngredient(
-    ingredient = Ingredient(id = ingredientId, name = ""),
+    id = id,
+    ingredient = Ingredient(id = ingredient.id, name = ""),
     amount = amount,
     unit = unit.toDomain()
 )
 
 fun FoodIngredient.toDto(): FoodIngredientDto = FoodIngredientDto(
+    id = id,
     foodId = 0L,
-    ingredientId = ingredient.id,
+    ingredient = ingredient.toDto(),
     amount = amount,
     unit = unit.toDto()
 )
