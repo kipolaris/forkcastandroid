@@ -1,0 +1,42 @@
+package hu.bme.aut.android.mealplanner.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import hu.bme.aut.android.mealplanner.repository.DayRepository
+import hu.bme.aut.android.mealplanner.repository.MealTimeRepository
+import hu.bme.aut.android.mealplanner.sync.SyncManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val syncManager: SyncManager,
+    private val dayRepository: DayRepository,
+    private val mealTimeRepository: MealTimeRepository
+) : ViewModel() {
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme
+
+    fun toggleTheme() {
+        _isDarkTheme.value = !_isDarkTheme.value
+    }
+
+    init {
+        viewModelScope.launch {
+            try {
+                syncManager.syncAll()
+            } finally {
+                dayRepository.initializeDefaultDays()
+                mealTimeRepository.initializeDefaultMealTimes()
+                _isLoading.value = false
+            }
+        }
+    }
+}

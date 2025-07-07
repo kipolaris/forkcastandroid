@@ -1,93 +1,42 @@
-# Házi feladat specifikáció
+# Forkcast
+Forkcast Android is an Android application which gives you the ability to plan your meals ahead for each day of the week.
 
-Információk [itt](https://viauav21.github.io/laborok/hf)
+## Features
+- You can add, remove, edit and reorder meal times
+- You can add, remove and edit foods and ingredients.
+- You can assign foods to each meal (combination of a day and a meal time).
+- You can reset the meal plan, the foods of the selected day or meal time, and the shopping list.
+- You can view a selected day and its foods for each meal.
+- You can view a selected meal time and its foods for each day.
+- You can assign ingredients to each food with quantities.
+- You can add ingredients to your shopping list with quantities and prices.
+- You can save ingredients you have at home with quantities.
 
-## Androidalapú szoftverfejlesztés
-### [Dátum - 2024 2. félév]
-### [Teljes név] - ([Neptun kód])
-### [e-mail cím] 
-### Laborvezető: [Laborvezető neve]
+## Structure
+- Menu screen: A screen which contains buttons to the following screens:
+  - Meal Plan screen
+  - Meal times screen
+  - Foods screen
+  - Ingredients screen
+  - Ingredients at home screen (TBA)
+  - Shopping list screen (TBA)
+- Meal plan screen: Table containing the selected day, each meal time in the first column, the meals assigned to the day/meal time combination, and a reset button.
+  - You can navigate between the days using the arrow buttons next to the day's name. 
+  - You can add meal times using the plus button in the last row of the table.
+  - You can reorder meal times using the arrow buttons next to their names.
+  - You can add foods to each meal time and day combination by clicking the cells in the table.
+    - When you click a cell a dialog pops up where you can select existing foods or add a new food.
+  - You can open the meal time screen by clicking on its name. (TBA)
+  - You can reset the day's meals with the reset button in the first cell of the table.
+- Meal time screen: A screen where you can view the selected meal time's foods for each day.
+- Meal times screen: A screen where you can view, edit, delete and reorder all the meal times, as well as add new ones.
+- Foods screen: A list of the existing food items where you can edit their names, delete them, or open their respective screens by clicking on their names.
+- Food screen: A screen for a specific food, where you can do the following:
+  - Add a description/recipe
+  - Add ingredients with quantities to the food
+    - If you click on the shopping cart icon next to the ingredient's name it adds it to the shopping list. (TBA)
+- Ingredients screen: A list of all the existing ingredients. You can add, edit and delete ingredients here.
+- Ingredients at home screen: A list of all the ingredients you have at home. (TBA)
+- Shopping list screen: A page where you can view the shopping list and edit/delete its content. You can add ingredients here with quantities and prices. (TBA)
+  - If you click on the checkbox next to the shopping item's name it gets added to the home ingredients, and deleted from the shopping list.
 
-## Bemutatás
-
-Az alkalmazás rövid, 2-3 mondatos bemutatása. Honnan az ötlet, mi szülte az igényt, ki lehetne a célközönség.
-A laboron és előadáson bemutatott alkalmazásokat nem lehet házi feladatnak választani.
-
-## Főbb funkciók
-
-Az alkalmazás minden funkciójára kiterjedő leírás. Legyen egyértelműen eldönthető, hogy az adott funkció implementálva van-e!
-P.l.: Az alkalmazással lehetőség van térképen megjeleníteni az állomáspontokat és azok A,B,C,D tulajdonságai meg is jelennek (ha elérhetőek).
-
-## Választott technológiák:
-
-Az alkalmazás fejlesztése során használt technológiák tételes felsorolása. Az, hogy mi számít technológiának a laborokon ismertetésre kerül, a laborvezetőkkel tovább pontosítható. 
-
-A kötelezőkön kívül (Compose UI, MVVM vagy ezzel egyenértékű egyéb architektúra, Dependency Injection) 3 technológia használata javasolt. Például:
-
-- Hálózatkezelés: Az alkalmazás a [https://coinbin.org/](https://coinbin.org/) nyílt API-t használja, és REST végponton keresztül tölti le az kritovaluták adatait.
-- Adatbáziskezelés: A felhasználó elmentheti a számára fontos kriptovaluták listáját, amit az alkalmazás perzisztensen tárol
-- Notificationök: Az alkalmazás értesítést küld, ha egy kpritovaluta ára az elmentett értékhez képest 10%-nál többet változott.
-
-___
-
-# Házi feladat dokumentáció
-
-### [Alkalmazás neve]
-
-<img src="./assets/icon.png" width="160">
-
-**Legkésőbb a dokumentáció fázisban lecserélendő a saját ikonnal!**
-
-## Bemutatás
-
-Az alkalmazás rövid, 2-3 mondatos bemutatása. Honnan az ötlet, mi szülte az igényt, ki lehetne a célközönség.
-A laboron és előadáson bemutatott alkalmazásokat nem lehet házi feladatnak választani.
-
-## Főbb funkciók
-
-Az alkalmazás minden funkciójára kiterjedő leírás. Legyen egyértelműen eldönthető, hogy az adott funkció implementálva van-e!
-P.l.: Az alkalmazással lehetőség van térképen megjeleníteni az állomáspontokat és azok A,B,C,D tulajdonságai meg is jelennek (ha elérhetőek).
-
-
-## Felhasználói kézikönyv
-
-Az alkalmazás minden funkciójára kiterjedő, teljes körű felhasználói leírás. Az összes releváns képernyőhöz/funkcióhoz tartalmaznia kell képernyőképet!
-
-A képernyőképekkel kapcsolatos követelmények:
-
-- Android Device Art Generator-ral telefont/tabletet kell rajzolni a képernyő köré!
-	- Mindegy, hogy melyik készüléket választod, de legyen egységes az egész dokumentumban!
-	- Telefonra tervezett képernyőket valamelyik telefon skin-nel, tablet képernyőt (amennyiben készítettél külön) tablet skin-nel készítsünk!
-- Álló képernyőket álló módban, fekvőket fekvő módban rakjuk be! (Értelemszerűen. Ha fekvő képernyőképet húzol be a generator-ba, akkor fekvő módban rajzolja köré az eszközt)
--	Minden képhez legyen képaláírás, ami leírja hogy mit kell nézni a képen!
--	A képeket úgy méretezzük, hogy álló telefon méretből kettő elférjen egymás mellett egy sorban (fekvő illetve tablet képeket ehhez viszonyítva nagyítsuk)!
--	Amennyiben gesztúra vezérlést akarunk bemutatni a képernyőn, jelezzük a gesztúrát is! (ld példa kép)
--	A képeket és a képaláírásokat középre igazítsuk!
-
-<p align="center">
-<img src="./assets/image1.png" width="320">
-<img src="./assets/image2.png" width="320">
-
-1. ábra: Gesztúrával és gombbal is navigálható képernyők, hasznos kényelmi funkció a felhasználónak ha több lehetőséget is biztosítunk a navigációra
-</p>
-
-## Felhasznált technológiák:
-
-Itt kell felsorolni minden technológiát, technikát, külső könyvtárat, komplexebb algoritmust, ami növeli az alkalmazás értékét. Osztályzáskor ezt a fejezetet nézzük meg először.
-
-Külső osztálykönyvtár használata esetén a könyvtár neve legyen link, ami annak elérhetőségére mutat.
-
-A kulcsszavak legyenek **félkövér** betűtípussal szedve.
-Például:
-
-- •	Az X és Y képernyők optimalizáltak **álló és fekvő nézetre** is
-- [YCharts](https://github.com/yml-org/YCharts) osztálykönyvtár használata a grafikonok rajzolására
-- **Fused Location API** használata helymeghatározásra
-- **SQLite** alapú adattárolás
-- Implicit intent használata **QR kód beolvasáshoz** (telepített Barcode Scanner alkalmazás szükséges a futtatásához)
-- A játék fizikáját a [Box2D](https://box2d.org/) motor biztosítja
-- **Service** használata zenelejátszáshoz
-
-## Fontosabb technológiai megoldások
-
-**A számodra legnehezebb/legérdekesebb funkciót fejtsd ki kb.  10 mondatban, hogy mi volt a probléma és hogyan oldottad meg.**
